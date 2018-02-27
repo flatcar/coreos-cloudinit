@@ -1,7 +1,7 @@
 [Unit]
 Description=Load cloud-config from /media/configdrive
-Requires=coreos-setup-environment.service
-After=coreos-setup-environment.service system-config.target
+Requires=flatcar-setup-environment.service
+After=flatcar-setup-environment.service system-config.target
 Before=user-config.target
 
 # HACK: work around ordering between config drive and ec2 metadata It is
@@ -11,7 +11,7 @@ Before=user-config.target
 # here instead of in the oem service because the oem unit is not written
 # to disk until the OEM cloud config is evaluated and I want to make sure
 # systemd knows about the ordering as early as possible.
-# coreos-cloudinit could implement a simple lock but that cannot be used
+# flatcar-cloudinit could implement a simple lock but that cannot be used
 # until after the systemd dbus calls are made non-blocking.
 After=oem-cloudinit.service
 
@@ -20,4 +20,4 @@ Type=oneshot
 TimeoutSec=10min
 RemainAfterExit=yes
 EnvironmentFile=-/etc/environment
-ExecStart=/usr/bin/coreos-cloudinit --from-configdrive=/media/configdrive
+ExecStart=/usr/bin/flatcar-cloudinit --from-configdrive=/media/configdrive
