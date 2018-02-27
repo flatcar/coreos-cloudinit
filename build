@@ -1,5 +1,6 @@
 #!/bin/bash -e
 
+NAME_FLATCAR="flatcar-cloudinit"
 NAME="coreos-cloudinit"
 ORG_PATH="github.com/coreos"
 REPO_PATH="${ORG_PATH}/${NAME}"
@@ -14,4 +15,4 @@ fi
 export GOBIN=${PWD}/bin
 export GOPATH=${PWD}/gopath
 
-go build -ldflags "${GLDFLAGS}" -o ${GOBIN}/${NAME} ${REPO_PATH}
+go build -ldflags "${GLDFLAGS}" -o ${GOBIN}/${NAME_FLATCAR} ${REPO_PATH}
