@@ -11,4 +11,4 @@ Type=oneshot
 TimeoutSec=10min
 RemainAfterExit=yes
 EnvironmentFile=-/etc/environment
-ExecStart=/usr/bin/flatcar-cloudinit --from-file=%f
+ExecStart=/usr/bin/coreos-cloudinit --from-file=%f
