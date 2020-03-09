@@ -5,7 +5,9 @@ Before=user-configvirtfs.service
 # or any host that has it explicitly enabled and not explicitly disabled.
 ConditionVirtualization=|vm
 ConditionKernelCommandLine=|flatcar.configdrive=1
+ConditionKernelCommandLine=|coreos.configdrive=1
 ConditionKernelCommandLine=!flatcar.configdrive=0
+ConditionKernelCommandLine=!coreos.configdrive=0
 
 # Support old style setup for now
 Wants=addon-run@media-configvirtfs.service addon-config@media-configvirtfs.service

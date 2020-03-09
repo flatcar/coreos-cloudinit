@@ -5,7 +5,9 @@ Before=user-configdrive.service
 # or any host that has it explicitly enabled and not explicitly disabled.
 ConditionVirtualization=|vm
 ConditionKernelCommandLine=|flatcar.configdrive=1
+ConditionKernelCommandLine=|coreos.configdrive=1
 ConditionKernelCommandLine=!flatcar.configdrive=0
+ConditionKernelCommandLine=!coreos.configdrive=0
 
 [Mount]
 What=LABEL=config-2
