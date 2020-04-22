@@ -153,9 +153,20 @@ func TestFetchUserdata(t *testing.T) {
 			userdata:  "test config",
 		},
 		{
+			variables: map[string]string{"ignition.config.data": "test config"},
+			userdata:  "test config",
+		},
+		{
 			variables: map[string]string{
 				"coreos.config.data.encoding": "",
 				"coreos.config.data":          "test config",
+			},
+			userdata: "test config",
+		},
+		{
+			variables: map[string]string{
+				"ignition.config.data.encoding": "",
+				"ignition.config.data":          "test config",
 			},
 			userdata: "test config",
 		},
@@ -175,7 +186,15 @@ func TestFetchUserdata(t *testing.T) {
 		},
 		{
 			variables: map[string]string{
+				"ignition.config.data.encoding": "gzip+base64",
+				"ignition.config.data":          "H4sIABaoWlUAAytJLS5RSM7PS8tMBwCQiHNZCwAAAA==",
+			},
+			userdata: "test config",
+		},
+		{
+			variables: map[string]string{
 				"coreos.config.data.encoding": "test encoding",
+				"coreos.config.data":          "abc",
 			},
 			err: errors.New(`Unsupported encoding "test encoding"`),
 		},
@@ -188,6 +207,18 @@ func TestFetchUserdata(t *testing.T) {
 		{
 			variables: map[string]string{
 				"coreos.config.url": "http://bad.example.com",
+			},
+			err: errors.New("Not found"),
+		},
+		{
+			variables: map[string]string{
+				"ignition.config.url": "http://good.example.com",
+			},
+			userdata: "test config",
+		},
+		{
+			variables: map[string]string{
+				"ignition.config.url": "http://bad.example.com",
 			},
 			err: errors.New("Not found"),
 		},
