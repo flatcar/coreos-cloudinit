@@ -122,19 +122,32 @@ func (v vmware) FetchMetadata() (metadata datasource.Metadata, err error) {
 }
 
 func (v vmware) FetchUserdata() ([]byte, error) {
-	encoding, err := v.readConfig("coreos.config.data.encoding")
-	if err != nil {
-		return nil, err
+	var data string
+	var encoding string
+	var url string
+	var err error
+
+	data, err = v.readConfig("ignition.config.data")
+	if err == nil && data != "" {
+		encoding, err = v.readConfig("ignition.config.data.encoding")
+	} else {
+		data, err = v.readConfig("coreos.config.data")
+		if err == nil && data != "" {
+			encoding, err = v.readConfig("coreos.config.data.encoding")
+		}
 	}
 
-	data, err := v.readConfig("coreos.config.data")
 	if err != nil {
 		return nil, err
 	}
 
 	// Try to fallback to url if no explicit data
 	if data == "" {
-		url, err := v.readConfig("coreos.config.url")
+		url, err = v.readConfig("ignition.config.url")
+		if err != nil || url == "" {
+			url, err = v.readConfig("coreos.config.url")
+		}
+
 		if err != nil {
 			return nil, err
 		}
