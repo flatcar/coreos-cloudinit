@@ -2,14 +2,14 @@
 
 ---
 
-**NOTE**: coreos-cloudinit is no longer under active development and has been superseded by [Ignition][ignition]. For more information about the recommended tools for provisioning Container Linux, refer to the [provisioning documentation][provisioning].
+**NOTE**: cloud-init overlaps in purpose with [Ignition][ignition] which is where most active development is taking place. However, the Flatcar Container Linux team also continues to support and maintain this project to maintain compatibility with cloudinit based environments.
 
-[ignition]: https://github.com/coreos/ignition
-[provisioning]: https://github.com/coreos/docs/blob/master/os/provisioning.md
+[ignition]: https://docs.flatcar-linux.org/ignition/what-is-ignition/#what-is-ignition
+[provisioning]: https://docs.flatcar-linux.org/os/provisioning/
 
 ---
 
-The `coreos.oem.*` parameters follow the [os-release spec][os-release], but have been repurposed as a way for coreos-cloudinit to know about the OEM partition on this machine. Customizing this section is only needed when generating a new OEM of CoreOS from the SDK. The fields include:
+The `coreos.oem.*` parameters follow the [os-release spec][os-release], but have been repurposed as a way for coreos-cloudinit to know about the OEM partition on this machine. Customizing this section is only needed when generating a new OEM of Flatcar Container Linux from the SDK. The fields include:
 
 - **id**: Lowercase string identifying the OEM
 - **name**: Human-friendly string representing the OEM
@@ -30,7 +30,7 @@ coreos:
     name: "Rackspace Cloud Servers"
     version-id: "168.0.0"
     home-url: "https://www.rackspace.com/cloud/servers/"
-    bug-report-url: "https://github.com/coreos/coreos-overlay"
+    bug-report-url: "https://github.com/flatcar-linux/Flatcar/issues"
 ```
 
 ...would be rendered to the following `/etc/oem-release`:
@@ -40,7 +40,7 @@ ID=rackspace
 NAME="Rackspace Cloud Servers"
 VERSION_ID=168.0.0
 HOME_URL="https://www.rackspace.com/cloud/servers/"
-BUG_REPORT_URL="https://github.com/coreos/coreos-overlay"
+BUG_REPORT_URL="https://github.com/flatcar-linux/Flatcar/issues"
 ```
 
 [os-release]: http://www.freedesktop.org/software/systemd/man/os-release.html

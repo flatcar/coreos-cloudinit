@@ -1,20 +1,18 @@
 **NOTE**: This project overlaps in purpose with [Ignition][ignition] which is where most active development is taking place. However, the Flatcar Container Linux team also continues to support and maintain this project to maintain compatibility with cloudinit based environments.
 
-[ignition]: https://github.com/coreos/ignition
+[ignition]: https://github.com/flatcar-linux/ignition
 
-# coreos-cloudinit [![Build Status](https://travis-ci.org/coreos/coreos-cloudinit.png?branch=master)](https://travis-ci.org/coreos/coreos-cloudinit)
-
-coreos-cloudinit enables a user to customize CoreOS machines by providing either a cloud-config document or an executable script through user-data.
+coreos-cloudinit enables a user to customize Flatcar Container Linux machines by providing either a cloud-config document or an executable script through user-data.
 
 ## Configuration with cloud-config
 
 A subset of the [official cloud-config spec][official-cloud-config] is implemented by coreos-cloudinit.
-Additionally, several [CoreOS-specific options][custom-cloud-config] have been implemented to support interacting with unit files, bootstrapping etcd clusters, and more.
+Additionally, several [Flatcar-specific options][custom-cloud-config] have been implemented to support interacting with unit files, bootstrapping etcd clusters, and more.
 All supported cloud-config parameters are [documented here][all-cloud-config]. 
 
 [official-cloud-config]: http://cloudinit.readthedocs.org/en/latest/topics/format.html#cloud-config-data
-[custom-cloud-config]: https://github.com/coreos/coreos-cloudinit/blob/master/Documentation/cloud-config.md#coreos-parameters
-[all-cloud-config]: https://github.com/coreos/coreos-cloudinit/tree/master/Documentation/cloud-config.md
+[custom-cloud-config]: https://github.com/flatcar-linux/coreos-cloudinit/blob/master/Documentation/cloud-config.md#coreos-parameters
+[all-cloud-config]: https://github.com/flatcar-linux/coreos-cloudinit/tree/master/Documentation/cloud-config.md
 
 The following is an example cloud-config document:
 
@@ -57,10 +55,10 @@ coreos-cloudinit will replace the following set of tokens in your user-data with
 | $public_ipv4  | Public IPv4 address of machine |
 | $private_ipv4 | Private IPv4 address of machine |
 
-These values are determined by CoreOS based on the given provider on which your machine is running.
-Read more about provider-specific functionality in the [CoreOS OEM documentation][oem-doc].
+These values are determined by Flatcar Container Linux based on the given provider on which your machine is running.
+Read more about provider-specific functionality in the [Flatcar Container Linux OEM documentation][oem-doc].
 
-[oem-doc]: https://coreos.com/docs/sdk-distributors/distributors/notes-for-distributors/
+[oem-doc]: https://docs.flatcar-linux.org/os/notes-for-distributors/
 
 For example, submitting the following user-data...
 
@@ -84,7 +82,7 @@ coreos:
 
 ## Bugs
 
-Please use the [CoreOS issue tracker][bugs] to report all bugs, issues, and feature requests.
+Please use the [Flatcar Container Linux issue tracker][bugs] to report all bugs, issues, and feature requests.
 
-[bugs]: https://github.com/coreos/bugs/issues/new?labels=component/cloud-init
+[bugs]: https://github.com/flatcar-linux/Flatcar/issues
 
