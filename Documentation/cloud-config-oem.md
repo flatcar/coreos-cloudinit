@@ -2,14 +2,14 @@
 
 ---
 
-**NOTE**: This project overlaps in purpose with [Ignition][ignition] which is where most active development is taking place. However, the Flatcar Container Linux team also continues to support and maintain this project to maintain compatibility with cloudinit based environments.
+**NOTE**: cloud-init overlaps in purpose with [Ignition][ignition] which is where most active development is taking place. However, the Flatcar Container Linux team also continues to support and maintain this project to maintain compatibility with cloudinit based environments.
 
 [ignition]: https://docs.flatcar-linux.org/ignition/what-is-ignition/#what-is-ignition
 [provisioning]: https://docs.flatcar-linux.org/os/provisioning/
 
 ---
 
-The `coreos.oem.*` parameters follow the [os-release spec][os-release], but have been repurposed as a way for coreos-cloudinit to know about the OEM partition on this machine. Customizing this section is only needed when generating a new OEM of CoreOS from the SDK. The fields include:
+The `coreos.oem.*` parameters follow the [os-release spec][os-release], but have been repurposed as a way for coreos-cloudinit to know about the OEM partition on this machine. Customizing this section is only needed when generating a new OEM of Flatcar Container Linux from the SDK. The fields include:
 
 - **id**: Lowercase string identifying the OEM
 - **name**: Human-friendly string representing the OEM

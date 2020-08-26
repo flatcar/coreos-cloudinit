@@ -2,14 +2,14 @@
 
 ---
 
-**NOTE**: This project overlaps in purpose with [Ignition][ignition] which is where most active development is taking place. However, the Flatcar Container Linux team also continues to support and maintain this project to maintain compatibility with cloudinit based environments.
+**NOTE**: cloud-init overlaps in purpose with [Ignition][ignition] which is where most active development is taking place. However, the Flatcar Container Linux team also continues to support and maintain this project to maintain compatibility with cloudinit based environments.
 
 [ignition]: https://github.com/flatcar-linux/ignition
 [provisioning]: https://github.com/flatcar-linux/docs/blob/master/os/provisioning.md
 
 ---
 
-CoreOS supports providing configuration data via [config drive][config-drive]
+Flatcar Container Linux supports providing configuration data via [config drive][config-drive]
 disk images. Currently only providing a single script or cloud config file is
 supported.
 
