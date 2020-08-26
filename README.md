@@ -2,8 +2,6 @@
 
 [ignition]: https://github.com/flatcar-linux/ignition
 
-# coreos-cloudinit [![Build Status](https://travis-ci.org/coreos/coreos-cloudinit.png?branch=master)](https://travis-ci.org/coreos/coreos-cloudinit)
-
 coreos-cloudinit enables a user to customize Flatcar Container Linux machines by providing either a cloud-config document or an executable script through user-data.
 
 ## Configuration with cloud-config
