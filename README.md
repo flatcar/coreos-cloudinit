@@ -1,4 +1,4 @@
-**NOTE**: This project has been superseded by [Ignition][ignition] and is no longer under active development. Please direct all development efforts to Ignition.
+**NOTE**: This project overlaps in purpose with [Ignition][ignition] which is where most active development is taking place. However, the Flatcar Container Linux team also continues to support and maintain this project to maintain compatibility with cloudinit based environments.
 
 [ignition]: https://github.com/coreos/ignition
 
