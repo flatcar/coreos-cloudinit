@@ -4,8 +4,8 @@
 
 **NOTE**: coreos-cloudinit is no longer under active development and has been superseded by [Ignition][ignition]. For more information about the recommended tools for provisioning Container Linux, refer to the [provisioning documentation][provisioning].
 
-[ignition]: https://github.com/flatcar-linux/ignition
-[provisioning]: https://github.com/flatcar-linux/docs/blob/master/os/provisioning.md
+[ignition]: https://docs.flatcar-linux.org/ignition/what-is-ignition/#what-is-ignition
+[provisioning]: https://docs.flatcar-linux.org/os/provisioning/
 
 ---
 

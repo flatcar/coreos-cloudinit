@@ -4,8 +4,8 @@
 
 **NOTE**: coreos-cloudinit is no longer under active development and has been superseded by [Ignition][ignition]. For more information about the recommended tools for provisioning Container Linux, refer to the [provisioning documentation][provisioning].
 
-[ignition]: https://github.com/flatcar-linux/ignition
-[provisioning]: https://github.com/flatcar-linux/docs/blob/master/os/provisioning.md
+[ignition]: https://docs.flatcar-linux.org/ignition/what-is-ignition/#what-is-ignition
+[provisioning]: https://docs.flatcar-linux.org/os/provisioning/
 
 ---
 
@@ -40,6 +40,6 @@ identifier for an `interface` does not correspond to anything outside of this
 configuration; it serves only to distinguish between multiple `interface`s.
 
 The guide to [booting on VMWare][bootvmware] is the starting point for more
-information about configuring and running CoreOS on VMWare.
+information about configuring and running Flatcar Container Linux on VMWare.
 
-[bootvmware]: https://github.com/flatcar-linux/docs/blob/master/os/booting-on-vmware.md
+[bootvmware]: https://docs.flatcar-linux.org/os/booting-on-vmware/
