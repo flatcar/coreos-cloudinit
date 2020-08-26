@@ -4,14 +4,14 @@
 
 **NOTE**: coreos-cloudinit is in maintenance-mode and has been superseded by [Ignition][ignition]. For more information about the recommended tools for provisioning Container Linux, refer to the [provisioning documentation][provisioning].
 
-[ignition]: https://github.com/coreos/ignition
+[ignition]: https://github.com/flatcar-linux/ignition
 [provisioning]: https://docs.flatcar-linux.org/os/provisioning/
 
 ---
 
 CoreOS allows you to declaratively customize various OS-level items, such as network configuration, user accounts, and systemd units. This document describes the full list of items we can configure. The `coreos-cloudinit` program uses these files as it configures the OS after startup or during runtime.
 
-Your cloud-config is processed during each boot. Invalid cloud-config won't be processed but will be logged in the journal. You can validate your cloud-config with the [CoreOS online validator](https://coreos.com/validate/) or by running `coreos-cloudinit -validate`.  In addition to these two validation methods you can debug `coreos-cloudinit` system output through the `journalctl` tool:
+Your cloud-config is processed during each boot. Invalid cloud-config won't be processed but will be logged in the journal. You can debug `coreos-cloudinit` system output through the `journalctl` tool:
 
 ```sh
 journalctl --identifier=coreos-cloudinit
@@ -50,7 +50,7 @@ If cloud-config header starts on `#!` then coreos-cloudinit will recognize it as
 
 ### Providing Cloud-Config with Config-Drive
 
-CoreOS tries to conform to each platform's native method to provide user data. Each cloud provider tends to be unique, but this complexity has been abstracted by CoreOS. You can view each platform's instructions on their documentation pages. The most universal way to provide cloud-config is [via config-drive](https://github.com/coreos/coreos-cloudinit/blob/master/Documentation/config-drive.md), which attaches a read-only device to the machine, that contains your cloud-config file.
+CoreOS tries to conform to each platform's native method to provide user data. Each cloud provider tends to be unique, but this complexity has been abstracted by CoreOS. You can view each platform's instructions on their documentation pages. The most universal way to provide cloud-config is [via config-drive](https://github.com/flatcar-linux/coreos-cloudinit/blob/master/Documentation/config-drive.md), which attaches a read-only device to the machine, that contains your cloud-config file.
 
 ## Configuration Parameters
 
@@ -88,7 +88,7 @@ For more information about the available configuration parameters, see the [etcd
 
 _Note: The `$private_ipv4` and `$public_ipv4` substitution variables referenced in other documents are only supported on Amazon EC2, Google Compute Engine, OpenStack, Rackspace, DigitalOcean, and Vagrant._
 
-[etcd-config]: https://github.com/coreos/etcd/blob/release-0.4/Documentation/configuration.md
+[etcd-config]: https://github.com/flatcar-linux/etcd/blob/release-0.4/Documentation/configuration.md
 
 #### etcd2 (deprecated)
 
@@ -128,7 +128,7 @@ For more information about the available configuration parameters, see the [etcd
 
 _Note: The `$private_ipv4` and `$public_ipv4` substitution variables referenced in other documents are only supported on Amazon EC2, Google Compute Engine, OpenStack, Rackspace, DigitalOcean, and Vagrant._
 
-[etcd2-config]: https://github.com/coreos/etcd/blob/v2.3.2/Documentation/configuration.md
+[etcd2-config]: https://github.com/flatcar-linux/etcd/blob/v2.3.2/Documentation/configuration.md
 
 #### fleet
 
@@ -169,7 +169,7 @@ List of fleet configuration parameters:
 
 For more information on fleet configuration, see the [fleet documentation][fleet-config].
 
-[fleet-config]: https://github.com/coreos/fleet/blob/master/Documentation/deployment-and-configuration.md#configuration
+[fleet-config]: https://github.com/flatcar-linux/fleet/blob/master/Documentation/deployment-and-configuration.md#configuration
 
 #### flannel
 
@@ -208,7 +208,7 @@ List of flannel configuration parameters:
 
 For more information on flannel configuration, see the [flannel documentation][flannel-readme].
 
-[flannel-readme]: https://github.com/coreos/flannel/blob/master/README.md
+[flannel-readme]: https://github.com/flatcar-linux/flannel/blob/master/README.md
 
 #### locksmith
 
@@ -244,20 +244,20 @@ List of locksmith configuration parameters:
 
 For the complete list of locksmith configuration parameters, see the [locksmith documentation][locksmith-readme].
 
-[locksmith-readme]: https://github.com/coreos/locksmith/blob/master/README.md
+[locksmith-readme]: https://github.com/flatcar-linux/locksmith/blob/master/README.md
 
 #### update
 
 The `coreos.update.*` parameters manipulate settings related to how CoreOS instances are updated.
 
 These fields will be written out to and replace `/etc/coreos/update.conf`. If only one of the parameters is given it will only overwrite the given field.
-The `reboot-strategy` parameter also affects the behaviour of [locksmith](https://github.com/coreos/locksmith).
+The `reboot-strategy` parameter also affects the behaviour of [locksmith](https://github.com/flatcar-linux/locksmith).
 
 - **reboot-strategy**: One of "reboot", "etcd-lock", or "off" for controlling when reboots are issued after an update is performed.
   - _reboot_: Reboot immediately after an update is applied.
   - _etcd-lock_: Reboot after first taking a distributed lock in etcd, this guarantees that only one host will reboot concurrently and that the cluster will remain available during the update.
   - _off_ - Disable rebooting after updates are applied (not recommended).
-- **server**: The location of the [Update Server (Nebraska)][nebraska-update] server which will be queried for updates. Also known as the [omaha][omaha-docs] server endpoint.
+- **server**: The location of the [Update Server (Nebraska)][nebraska-update] server which will be queried for updates. Also known as the [omaha][omaha-docs] server endpoint. Use `https://public.update.flatcar-linux.net/v1/update/` for the public update service maintained by Kinvolk.
 - **group**:  signifies the channel which should be used for automatic updates.  This value defaults to the version of the image initially downloaded. (one of "master", "alpha", "beta", "stable")
 
 [nebraska-update]: https://github.com/kinvolk/nebraska

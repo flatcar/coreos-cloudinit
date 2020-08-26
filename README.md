@@ -1,6 +1,6 @@
 **NOTE**: This project has been superseded by [Ignition][ignition] and is no longer under active development. Please direct all development efforts to Ignition.
 
-[ignition]: https://github.com/coreos/ignition
+[ignition]: https://github.com/flatcar-linux/ignition
 
 # coreos-cloudinit [![Build Status](https://travis-ci.org/coreos/coreos-cloudinit.png?branch=master)](https://travis-ci.org/coreos/coreos-cloudinit)
 
@@ -13,8 +13,8 @@ Additionally, several [CoreOS-specific options][custom-cloud-config] have been i
 All supported cloud-config parameters are [documented here][all-cloud-config]. 
 
 [official-cloud-config]: http://cloudinit.readthedocs.org/en/latest/topics/format.html#cloud-config-data
-[custom-cloud-config]: https://github.com/coreos/coreos-cloudinit/blob/master/Documentation/cloud-config.md#coreos-parameters
-[all-cloud-config]: https://github.com/coreos/coreos-cloudinit/tree/master/Documentation/cloud-config.md
+[custom-cloud-config]: https://github.com/flatcar-linux/coreos-cloudinit/blob/master/Documentation/cloud-config.md#coreos-parameters
+[all-cloud-config]: https://github.com/flatcar-linux/coreos-cloudinit/tree/master/Documentation/cloud-config.md
 
 The following is an example cloud-config document:
 
@@ -60,7 +60,7 @@ coreos-cloudinit will replace the following set of tokens in your user-data with
 These values are determined by CoreOS based on the given provider on which your machine is running.
 Read more about provider-specific functionality in the [CoreOS OEM documentation][oem-doc].
 
-[oem-doc]: https://coreos.com/docs/sdk-distributors/distributors/notes-for-distributors/
+[oem-doc]: https://docs.flatcar-linux.org/os/notes-for-distributors/
 
 For example, submitting the following user-data...
 
@@ -86,5 +86,5 @@ coreos:
 
 Please use the [CoreOS issue tracker][bugs] to report all bugs, issues, and feature requests.
 
-[bugs]: https://github.com/coreos/bugs/issues/new?labels=component/cloud-init
+[bugs]: https://github.com/flatcar-linux/bugs/issues/new?labels=component/cloud-init
 

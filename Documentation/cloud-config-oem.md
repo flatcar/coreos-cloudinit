@@ -4,8 +4,8 @@
 
 **NOTE**: coreos-cloudinit is no longer under active development and has been superseded by [Ignition][ignition]. For more information about the recommended tools for provisioning Container Linux, refer to the [provisioning documentation][provisioning].
 
-[ignition]: https://github.com/coreos/ignition
-[provisioning]: https://github.com/coreos/docs/blob/master/os/provisioning.md
+[ignition]: https://github.com/flatcar-linux/ignition
+[provisioning]: https://github.com/flatcar-linux/docs/blob/master/os/provisioning.md
 
 ---
 
@@ -30,7 +30,7 @@ coreos:
     name: "Rackspace Cloud Servers"
     version-id: "168.0.0"
     home-url: "https://www.rackspace.com/cloud/servers/"
-    bug-report-url: "https://github.com/coreos/coreos-overlay"
+    bug-report-url: "https://github.com/flatcar-linux/coreos-overlay"
 ```
 
 ...would be rendered to the following `/etc/oem-release`:
@@ -40,7 +40,7 @@ ID=rackspace
 NAME="Rackspace Cloud Servers"
 VERSION_ID=168.0.0
 HOME_URL="https://www.rackspace.com/cloud/servers/"
-BUG_REPORT_URL="https://github.com/coreos/coreos-overlay"
+BUG_REPORT_URL="https://github.com/flatcar-linux/coreos-overlay"
 ```
 
 [os-release]: http://www.freedesktop.org/software/systemd/man/os-release.html
