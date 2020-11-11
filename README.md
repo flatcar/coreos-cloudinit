@@ -84,5 +84,5 @@ coreos:
 
 Please use the [Flatcar Container Linux issue tracker][bugs] to report all bugs, issues, and feature requests.
 
-[bugs]: https://github.com/flatcar-linux/Flatcar/issues
+[bugs]: https://github.com/kinvolk/flatcar/issues
 
