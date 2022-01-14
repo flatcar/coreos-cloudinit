@@ -86,6 +86,7 @@ func (i *logicalInterface) Network() string {
 	case configMethodDHCP:
 		config += "DHCP=true\n"
 		config += "KeepConfiguration=dhcp-on-stop\n"
+		config += "IPv6AcceptRA=true\n"
 	}
 
 	return config
