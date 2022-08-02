@@ -2,11 +2,9 @@
 
 source ./build
 
-SRC=$(find . -name '*.go' \
-	-not -path "./vendor/*")
+SRC=$(find . -name '*.go')
 
-PKG=$(cd gopath/src/${REPO_PATH}; go list ./... | \
-	grep --invert-match vendor)
+PKG=$(go list ./...)
 
 echo "Checking gofix..."
 go tool fix -diff $SRC
