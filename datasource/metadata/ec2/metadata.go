@@ -42,9 +42,11 @@ type metadataService struct {
 }
 
 func NewDatasource(root string) *metadataService {
-	if token, err := fetchToken(); err != nil {
+	if token, err := fetchToken(); err == nil {
 		tokenHeader := http.Header(map[string][]string{"X-aws-ec2-metadata-token": {string(token)}})
 		return &metadataService{metadata.NewDatasource(root, apiVersion, userdataPath, metadataPath, tokenHeader)}
+	} else {
+		log.Printf("error: %v", err)
 	}
 	return &metadataService{metadata.NewDatasource(root, apiVersion, userdataPath, metadataPath, nil)}
 }
@@ -105,19 +107,22 @@ func fetchToken() ([]byte, error) {
 	c := &http.Client{
 		Timeout: 10 * time.Second,
 	}
-	req, err := http.NewRequest("PUT", DefaultAddress+apiVersion+"api/token", nil)
+	log.Print("fetching token...")
+	req, err := http.NewRequest("PUT", DefaultAddress+"latest/api/token", nil)
 	if err != nil {
 		return nil, err
 	}
 	// 6 hours
 	req.Header.Add("X-aws-ec2-metadata-token-ttl-seconds", "21600")
 	if resp, err := c.Do(req); err == nil {
-		defer resp.Body.Close()
 		if resp.StatusCode == 200 {
 			return ioutil.ReadAll(resp.Body)
+		} else {
+			return nil, fmt.Errorf("token response status code %v", resp.StatusCode)
 		}
+	} else {
+		return nil, fmt.Errorf("Unable to fetch data: %s", err.Error())
 	}
-	return nil, fmt.Errorf("Unable to fetch data: %s", err.Error())
 }
 
 func (ms metadataService) fetchAttributes(url string) ([]string, error) {
