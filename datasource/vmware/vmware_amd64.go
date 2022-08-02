@@ -21,9 +21,9 @@ import (
 
 	"github.com/coreos/coreos-cloudinit/pkg"
 
+	"github.com/sigma/vmw-ovflib"
 	"github.com/vmware/vmw-guestinfo/rpcvmx"
 	"github.com/vmware/vmw-guestinfo/vmcheck"
-	"github.com/sigma/vmw-ovflib"
 )
 
 type ovfWrapper struct {
