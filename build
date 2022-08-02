@@ -5,5 +5,7 @@ ORG_PATH="github.com/coreos"
 REPO_PATH="${ORG_PATH}/${NAME}"
 VERSION=$(git describe --dirty --tags)
 GLDFLAGS="-X main.version=\"${VERSION}\""
+GOBIN=$(go env GOBIN)
+GOBIN=${GOBIN:-'/tmp/'}
 
-go build -ldflags "${GLDFLAGS}" -o $(go env GOBIN)/${NAME} .
+go build -ldflags "${GLDFLAGS}" -o ${GOBIN}/${NAME} .
