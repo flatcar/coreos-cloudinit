@@ -72,7 +72,12 @@ func (v vmware) IsAvailable() bool {
 		_, err := os.Stat(v.ovfFileName)
 		return !os.IsNotExist(err)
 	}
-	return vmcheck.IsVirtualWorld()
+	ret, err := vmcheck.IsVirtualWorld()
+	if err != nil {
+		log.Printf("IsVirtualWorld: %v\n", err)
+		return false
+	}
+	return ret
 }
 
 func readConfig(key string) (string, error) {

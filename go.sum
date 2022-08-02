@@ -17,10 +17,8 @@ github.com/kr/pretty v0.2.1/go.mod h1:ipq/a2n7PKx3OHsz4KJII5eveXtPO4qwEXGdVfWzfn
 github.com/kr/pty v1.1.1/go.mod h1:pFQYn66WHrOpPYNljwOMqo10TkYh1fy3cYio2l3bCsQ=
 github.com/kr/text v0.1.0 h1:45sCR5RtlFHMR4UwH9sdQ5TC8v0qDQCHnXt+kaKSTVE=
 github.com/kr/text v0.1.0/go.mod h1:4Jbv+DJW3UT/LiOwJeYQe1efqtUx/iVham/4vfdArNI=
-github.com/sigma/bdoor v0.0.0-20160202064022-babf2a4017b0 h1:qxAYbRwLfydo33S7iASTeJJUas9DpMwHV1aphcrlJHI=
-github.com/sigma/bdoor v0.0.0-20160202064022-babf2a4017b0/go.mod h1:WBu7REWbxC/s/J06jsk//d+9DOz9BbsmcIrimuGRFbs=
-github.com/sigma/vmw-guestinfo v0.0.0-20160204083807-95dd4126d6e8 h1:KGPVEH9zX2nj28zToXFBeap2KgOKmWrshKtuSgKOvDk=
-github.com/sigma/vmw-guestinfo v0.0.0-20160204083807-95dd4126d6e8/go.mod h1:JrRFFC0veyh0cibh0DAhriSY7/gV3kDdNaVUOmfx01U=
+github.com/sigma/vmw-guestinfo v0.0.0-20170622145319-ab8497750719 h1:RdpTT9XV4QBLYPeqHUjGAhydFTimEjgvLDFyBfLAelI=
+github.com/sigma/vmw-guestinfo v0.0.0-20170622145319-ab8497750719/go.mod h1:JrRFFC0veyh0cibh0DAhriSY7/gV3kDdNaVUOmfx01U=
 github.com/sigma/vmw-ovflib v0.0.0-20150531125353-56b4f44581ca h1:zVbnn0fCxftRipg4oHS6mZIP6hcm6axhUff5jV1qcC8=
 github.com/sigma/vmw-ovflib v0.0.0-20150531125353-56b4f44581ca/go.mod h1:q9NV7D9YHntGOV2o9x6YzAyj94wmxxSoead3EcjVvWI=
 github.com/smartystreets/assertions v1.2.0 h1:42S6lae5dvLc7BrLu/0ugRtcFVjoJNMC/N3yZFZkDFs=
