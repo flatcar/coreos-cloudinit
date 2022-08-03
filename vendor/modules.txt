@@ -1,0 +1,33 @@
+# github.com/cloudsigma/cepgo v0.0.0-20140805094338-1bfc4895bf5c
+## explicit
+github.com/cloudsigma/cepgo
+# github.com/coreos/go-systemd v0.0.0-20140326023052-4fbc5060a317
+## explicit
+github.com/coreos/go-systemd/dbus
+# github.com/coreos/yaml v0.0.0-20141224210557-6b16a5714269
+## explicit
+github.com/coreos/yaml
+# github.com/dotcloud/docker v0.11.2-0.20140522020950-55d41c3e21e1
+## explicit
+github.com/dotcloud/docker/pkg/netlink
+# github.com/guelfey/go.dbus v0.0.0-20131113121618-f6a3a2366cc3
+## explicit
+github.com/guelfey/go.dbus
+# github.com/sigma/vmw-ovflib v0.0.0-20150531125353-56b4f44581ca
+## explicit
+github.com/sigma/vmw-ovflib
+# github.com/smartystreets/goconvey v1.7.2
+## explicit; go 1.16
+# github.com/tarm/goserial v0.0.0-20140420040555-cdabc8d44e8e
+## explicit
+github.com/tarm/goserial
+# github.com/vmware/vmw-guestinfo v0.0.0-20170622145319-ab8497750719 => github.com/sigma/vmw-guestinfo v0.0.0-20170622145319-ab8497750719
+## explicit
+github.com/vmware/vmw-guestinfo/bdoor
+github.com/vmware/vmw-guestinfo/message
+github.com/vmware/vmw-guestinfo/rpcout
+github.com/vmware/vmw-guestinfo/rpcvmx
+github.com/vmware/vmw-guestinfo/vmcheck
+# gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c
+## explicit; go 1.11
+# github.com/vmware/vmw-guestinfo => github.com/sigma/vmw-guestinfo v0.0.0-20170622145319-ab8497750719

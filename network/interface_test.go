@@ -53,7 +53,7 @@ func TestInterfaceGenerators(t *testing.T) {
 		{
 			name:    "testname",
 			netdev:  "[NetDev]\nKind=bond\nName=testname\n\n[Bond]\n",
-			network: "[Match]\nName=testname\n\n[Network]\nBond=testbond1\nVLAN=testvlan1\nVLAN=testvlan2\nDHCP=true\n",
+			network: "[Match]\nName=testname\n\n[Network]\nBond=testbond1\nVLAN=testvlan1\nVLAN=testvlan2\nDHCP=true\nKeepConfiguration=dhcp-on-stop\nIPv6AcceptRA=true\n",
 			kind:    "bond",
 			iface: &bondInterface{logicalInterface: logicalInterface{
 				name:   "testname",
@@ -82,7 +82,7 @@ func TestInterfaceGenerators(t *testing.T) {
 		{
 			name:    "testname",
 			netdev:  "[NetDev]\nKind=vlan\nName=testname\nMACAddress=00:01:02:03:04:05\n\n[VLAN]\nId=1\n",
-			network: "[Match]\nName=testname\n\n[Network]\nDHCP=true\n",
+			network: "[Match]\nName=testname\n\n[Network]\nDHCP=true\nKeepConfiguration=dhcp-on-stop\nIPv6AcceptRA=true\n",
 			kind:    "vlan",
 			iface:   &vlanInterface{logicalInterface{name: "testname", config: configMethodDHCP{hwaddress: net.HardwareAddr([]byte{0, 1, 2, 3, 4, 5})}}, 1, ""},
 		},

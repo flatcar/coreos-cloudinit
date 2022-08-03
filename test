@@ -2,7 +2,7 @@
 
 source ./build
 
-SRC=$(find . -name '*.go')
+SRC=$(find . -name '*.go' -not -path './vendor/*')
 
 PKG=$(go list ./...)
 

@@ -21,9 +21,9 @@ import (
 
 	"github.com/coreos/coreos-cloudinit/pkg"
 
-	"github.com/sigma/vmw-guestinfo/rpcvmx"
-	"github.com/sigma/vmw-guestinfo/vmcheck"
 	"github.com/sigma/vmw-ovflib"
+	"github.com/vmware/vmw-guestinfo/rpcvmx"
+	"github.com/vmware/vmw-guestinfo/vmcheck"
 )
 
 type ovfWrapper struct {
@@ -72,7 +72,12 @@ func (v vmware) IsAvailable() bool {
 		_, err := os.Stat(v.ovfFileName)
 		return !os.IsNotExist(err)
 	}
-	return vmcheck.IsVirtualWorld()
+	ret, err := vmcheck.IsVirtualWorld()
+	if err != nil {
+		log.Printf("IsVirtualWorld: %v\n", err)
+		return false
+	}
+	return ret
 }
 
 func readConfig(key string) (string, error) {
