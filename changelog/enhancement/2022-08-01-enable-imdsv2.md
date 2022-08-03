@@ -1,0 +1,1 @@
+- Enable IMDSv2 on AWS for enhanced security.  Fixes https://github.com/flatcar-linux/Flatcar/issues/787.

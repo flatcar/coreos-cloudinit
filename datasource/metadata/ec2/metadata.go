@@ -18,9 +18,12 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net"
+	"net/http"
 	"strings"
+	"time"
 
 	"github.com/coreos/coreos-cloudinit/datasource"
 	"github.com/coreos/coreos-cloudinit/datasource/metadata"
@@ -39,6 +42,12 @@ type metadataService struct {
 }
 
 func NewDatasource(root string) *metadataService {
+	if token, err := fetchToken(); err == nil {
+		tokenHeader := http.Header(map[string][]string{"X-aws-ec2-metadata-token": {string(token)}})
+		return &metadataService{metadata.NewDatasource(root, apiVersion, userdataPath, metadataPath, tokenHeader)}
+	} else {
+		log.Printf("error: %v", err)
+	}
 	return &metadataService{metadata.NewDatasource(root, apiVersion, userdataPath, metadataPath, nil)}
 }
 
@@ -91,6 +100,29 @@ func (ms metadataService) FetchMetadata() (datasource.Metadata, error) {
 
 func (ms metadataService) Type() string {
 	return "ec2-metadata-service"
+}
+
+// This is separate from the normal HTTP client because it is needed to configure that client.
+func fetchToken() ([]byte, error) {
+	c := &http.Client{
+		Timeout: 10 * time.Second,
+	}
+	log.Print("fetching token...")
+	req, err := http.NewRequest("PUT", DefaultAddress+"latest/api/token", nil)
+	if err != nil {
+		return nil, err
+	}
+	// 6 hours
+	req.Header.Add("X-aws-ec2-metadata-token-ttl-seconds", "21600")
+	if resp, err := c.Do(req); err == nil {
+		if resp.StatusCode == 200 {
+			return ioutil.ReadAll(resp.Body)
+		} else {
+			return nil, fmt.Errorf("token response status code %v", resp.StatusCode)
+		}
+	} else {
+		return nil, fmt.Errorf("Unable to fetch data: %s", err.Error())
+	}
 }
 
 func (ms metadataService) fetchAttributes(url string) ([]string, error) {
