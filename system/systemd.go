@@ -23,8 +23,9 @@ import (
 	"path"
 	"strings"
 
-	"github.com/coreos/coreos-cloudinit/config"
 	"github.com/coreos/go-systemd/dbus"
+
+	"github.com/flatcar/coreos-cloudinit/config"
 )
 
 func NewUnitManager(root string) UnitManager {

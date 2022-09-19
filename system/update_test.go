@@ -20,7 +20,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/coreos/coreos-cloudinit/config"
+	"github.com/flatcar/coreos-cloudinit/config"
 )
 
 func testReadConfig(config string) func() (io.Reader, error) {

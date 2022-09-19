@@ -18,7 +18,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/coreos/coreos-cloudinit/datasource"
+	"github.com/flatcar/coreos-cloudinit/datasource"
 )
 
 type localFile struct {

@@ -1,4 +1,4 @@
-module github.com/coreos/coreos-cloudinit
+module github.com/flatcar/coreos-cloudinit
 
 go 1.18
 

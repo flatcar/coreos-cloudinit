@@ -20,8 +20,8 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/coreos/coreos-cloudinit/config"
-	"github.com/coreos/coreos-cloudinit/network"
+	"github.com/flatcar/coreos-cloudinit/config"
+	"github.com/flatcar/coreos-cloudinit/network"
 
 	"github.com/dotcloud/docker/pkg/netlink"
 )

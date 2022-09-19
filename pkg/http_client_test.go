@@ -109,8 +109,8 @@ coreos:
 	    id: test
 	    name: CoreOS.box for Test
 	    version-id: %VERSION_ID%+%BUILD_ID%
-	    home-url: https://github.com/coreos/coreos-cloudinit
-	    bug-report-url: https://github.com/coreos/coreos-cloudinit
+	    home-url: https://github.com/flatcar/coreos-cloudinit
+	    bug-report-url: https://github.com/flatcar/coreos-cloudinit
 	update:
 		reboot-strategy: etcd-lock
 `

@@ -19,7 +19,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/coreos/coreos-cloudinit/pkg"
+	"github.com/flatcar/coreos-cloudinit/pkg"
 
 	"github.com/sigma/vmw-ovflib"
 	"github.com/vmware/vmw-guestinfo/rpcvmx"

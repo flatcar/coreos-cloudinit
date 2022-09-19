@@ -20,7 +20,7 @@ import (
 	"path"
 	"testing"
 
-	"github.com/coreos/coreos-cloudinit/config"
+	"github.com/flatcar/coreos-cloudinit/config"
 )
 
 func TestWriteFileUnencodedContent(t *testing.T) {

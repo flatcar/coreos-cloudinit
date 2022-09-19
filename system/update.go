@@ -24,7 +24,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/coreos/coreos-cloudinit/config"
+	"github.com/flatcar/coreos-cloudinit/config"
 )
 
 const (

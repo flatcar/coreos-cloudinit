@@ -4,8 +4,8 @@
 
 **NOTE**: This project overlaps in purpose with [Ignition][ignition] which is where most active development is taking place. However, the Flatcar Container Linux team also continues to support and maintain this project to maintain compatibility with cloudinit based environments.
 
-[ignition]: https://github.com/flatcar-linux/ignition
-[provisioning]: https://docs.flatcar-linux.org/os/provisioning/
+[ignition]: https://www.flatcar.org/docs/latest/provisioning/ignition/
+[provisioning]: https://www.flatcar.org/docs/latest/provisioning/
 
 ---
 

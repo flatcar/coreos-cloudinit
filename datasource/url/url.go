@@ -15,8 +15,8 @@
 package url
 
 import (
-	"github.com/coreos/coreos-cloudinit/datasource"
-	"github.com/coreos/coreos-cloudinit/pkg"
+	"github.com/flatcar/coreos-cloudinit/datasource"
+	"github.com/flatcar/coreos-cloudinit/pkg"
 )
 
 type remoteFile struct {
