@@ -4,8 +4,8 @@
 
 **NOTE**: This project overlaps in purpose with [Ignition][ignition] which is where most active development is taking place. However, the Flatcar Container Linux team also continues to support and maintain this project to maintain compatibility with cloudinit based environments.
 
-[ignition]: https://docs.flatcar-linux.org/ignition/what-is-ignition/#what-is-ignition
-[provisioning]: https://docs.flatcar-linux.org/os/provisioning/
+[ignition]: https://www.flatcar.org/docs/latest/provisioning/ignition/
+[provisioning]: https://www.flatcar.org/docs/latest/provisioning/
 
 ---
 
@@ -42,4 +42,4 @@ configuration; it serves only to distinguish between multiple `interface`s.
 The guide to [booting on VMWare][bootvmware] is the starting point for more
 information about configuring and running Flatcar Container Linux on VMWare.
 
-[bootvmware]: https://docs.flatcar-linux.org/os/booting-on-vmware/
+[bootvmware]: https://www.flatcar.org/docs/latest/installing/cloud/vmware/

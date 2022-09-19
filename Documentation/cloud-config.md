@@ -4,8 +4,8 @@
 
 **NOTE**: This project overlaps in purpose with [Ignition][ignition] which is where most active development is taking place. However, the Flatcar Container Linux team also continues to support and maintain this project to maintain compatibility with cloudinit based environments.
 
-[ignition]: https://github.com/flatcar-linux/ignition
-[provisioning]: https://docs.flatcar-linux.org/os/provisioning/
+[ignition]: https://www.flatcar.org/docs/latest/provisioning/ignition/
+[provisioning]: https://www.flatcar.org/docs/latest/provisioning/
 
 ---
 
@@ -50,7 +50,7 @@ If cloud-config header starts on `#!` then coreos-cloudinit will recognize it as
 
 ### Providing Cloud-Config with Config-Drive
 
-Flatcar Container Linux tries to conform to each platform's native method to provide user data. Each cloud provider tends to be unique, but this complexity has been abstracted by Flatcar Container Linux. You can view each platform's instructions on their documentation pages. The most universal way to provide cloud-config is [via config-drive](https://github.com/flatcar-linux/coreos-cloudinit/blob/master/Documentation/config-drive.md), which attaches a read-only device to the machine, that contains your cloud-config file.
+Flatcar Container Linux tries to conform to each platform's native method to provide user data. Each cloud provider tends to be unique, but this complexity has been abstracted by Flatcar Container Linux. You can view each platform's instructions on their documentation pages. The most universal way to provide cloud-config is [via config-drive](./config-drive.md), which attaches a read-only device to the machine, that contains your cloud-config file.
 
 ## Configuration Parameters
 
@@ -88,7 +88,7 @@ For more information about the available configuration parameters, see the [etcd
 
 _Note: The `$private_ipv4` and `$public_ipv4` substitution variables referenced in other documents are only supported on Amazon EC2, Google Compute Engine, OpenStack, Rackspace, DigitalOcean, and Vagrant._
 
-[etcd-config]: https://github.com/flatcar-linux/etcd/blob/release-0.4/Documentation/configuration.md
+[etcd-config]: https://etcd.io/docs/v3.5/op-guide/configuration/
 
 #### etcd2 (deprecated)
 
@@ -128,7 +128,7 @@ For more information about the available configuration parameters, see the [etcd
 
 _Note: The `$private_ipv4` and `$public_ipv4` substitution variables referenced in other documents are only supported on Amazon EC2, Google Compute Engine, OpenStack, Rackspace, DigitalOcean, and Vagrant._
 
-[etcd2-config]: https://github.com/flatcar-linux/etcd/blob/v2.3.2/Documentation/configuration.md
+[etcd2-config]: https://etcd.io/docs/v2.3/configuration/
 
 #### fleet
 
@@ -169,7 +169,7 @@ List of fleet configuration parameters:
 
 For more information on fleet configuration, see the [fleet documentation][fleet-config].
 
-[fleet-config]: https://github.com/flatcar-linux/fleet/blob/master/Documentation/deployment-and-configuration.md#configuration
+[fleet-config]: https://github.com/kinvolk-archives/fleet/blob/master/Documentation/deployment-and-configuration.md#configuration
 
 #### flannel
 
@@ -208,7 +208,7 @@ List of flannel configuration parameters:
 
 For more information on flannel configuration, see the [flannel documentation][flannel-readme].
 
-[flannel-readme]: https://github.com/flatcar-linux/flannel/blob/master/README.md
+[flannel-readme]: https://github.com/flannel-io/flannel/blob/master/Documentation/configuration.md
 
 #### locksmith
 
@@ -244,14 +244,14 @@ List of locksmith configuration parameters:
 
 For the complete list of locksmith configuration parameters, see the [locksmith documentation][locksmith-readme].
 
-[locksmith-readme]: https://github.com/flatcar-linux/locksmith/blob/master/README.md
+[locksmith-readme]: https://github.com/flatcar/locksmith/blob/master/README.md
 
 #### update
 
 The `coreos.update.*` parameters manipulate settings related to how Flatcar Container Linux instances are updated.
 
 These fields will be written out to and replace `/etc/coreos/update.conf`. If only one of the parameters is given it will only overwrite the given field.
-The `reboot-strategy` parameter also affects the behaviour of [locksmith](https://github.com/flatcar-linux/locksmith).
+The `reboot-strategy` parameter also affects the behaviour of [locksmith](https://github.com/flatcar/locksmith).
 
 - **reboot-strategy**: One of "reboot", "etcd-lock", or "off" for controlling when reboots are issued after an update is performed.
   - _reboot_: Reboot immediately after an update is applied.

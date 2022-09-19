@@ -4,8 +4,8 @@
 
 **NOTE**: cloud-init overlaps in purpose with [Ignition][ignition] which is where most active development is taking place. However, the Flatcar Container Linux team also continues to support and maintain this project to maintain compatibility with cloudinit based environments.
 
-[ignition]: https://docs.flatcar-linux.org/ignition/what-is-ignition/#what-is-ignition
-[provisioning]: https://docs.flatcar-linux.org/os/provisioning/
+[ignition]: https://www.flatcar.org/docs/latest/provisioning/ignition/
+[provisioning]: https://www.flatcar.org/docs/latest/provisioning/
 
 ---
 
@@ -30,7 +30,7 @@ coreos:
     name: "Rackspace Cloud Servers"
     version-id: "168.0.0"
     home-url: "https://www.rackspace.com/cloud/servers/"
-    bug-report-url: "https://github.com/kinvolk/flatcar/issues"
+    bug-report-url: "https://github.com/flatcar/flatcar/issues"
 ```
 
 ...would be rendered to the following `/etc/oem-release`:
@@ -40,7 +40,7 @@ ID=rackspace
 NAME="Rackspace Cloud Servers"
 VERSION_ID=168.0.0
 HOME_URL="https://www.rackspace.com/cloud/servers/"
-BUG_REPORT_URL="https://github.com/kinvolk/flatcar/issues"
+BUG_REPORT_URL="https://github.com/flatcar/flatcar/issues"
 ```
 
 [os-release]: http://www.freedesktop.org/software/systemd/man/os-release.html
