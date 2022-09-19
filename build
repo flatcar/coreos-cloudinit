@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 NAME="coreos-cloudinit"
-ORG_PATH="github.com/coreos"
+ORG_PATH="github.com/flatcar"
 REPO_PATH="${ORG_PATH}/${NAME}"
 VERSION=$(git describe --dirty --tags)
 GLDFLAGS="-X main.version=\"${VERSION}\""

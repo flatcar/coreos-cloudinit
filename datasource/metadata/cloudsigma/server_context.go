@@ -24,7 +24,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/coreos/coreos-cloudinit/datasource"
+	"github.com/flatcar/coreos-cloudinit/datasource"
 
 	"github.com/cloudsigma/cepgo"
 )

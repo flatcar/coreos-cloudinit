@@ -17,7 +17,7 @@ package system
 import (
 	"testing"
 
-	"github.com/coreos/coreos-cloudinit/config"
+	"github.com/flatcar/coreos-cloudinit/config"
 )
 
 func TestType(t *testing.T) {

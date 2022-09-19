@@ -18,7 +18,7 @@ import (
 	"errors"
 	"log"
 
-	"github.com/coreos/coreos-cloudinit/config"
+	"github.com/flatcar/coreos-cloudinit/config"
 )
 
 var (

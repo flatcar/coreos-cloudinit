@@ -18,8 +18,8 @@ import (
 	"fmt"
 	"net"
 
-	"github.com/coreos/coreos-cloudinit/config"
-	"github.com/coreos/coreos-cloudinit/datasource"
+	"github.com/flatcar/coreos-cloudinit/config"
+	"github.com/flatcar/coreos-cloudinit/datasource"
 )
 
 type readConfigFunction func(key string) (string, error)

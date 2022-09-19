@@ -21,7 +21,7 @@ import (
 	"path"
 	"testing"
 
-	"github.com/coreos/coreos-cloudinit/config"
+	"github.com/flatcar/coreos-cloudinit/config"
 )
 
 func TestPlaceUnit(t *testing.T) {

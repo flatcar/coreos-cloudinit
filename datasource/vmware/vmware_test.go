@@ -22,7 +22,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/coreos/coreos-cloudinit/datasource"
+	"github.com/flatcar/coreos-cloudinit/datasource"
 )
 
 type MockHypervisor map[string]string

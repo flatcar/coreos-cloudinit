@@ -19,8 +19,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/coreos/coreos-cloudinit/datasource/metadata/test"
-	"github.com/coreos/coreos-cloudinit/pkg"
+	"github.com/flatcar/coreos-cloudinit/datasource/metadata/test"
+	"github.com/flatcar/coreos-cloudinit/pkg"
 )
 
 func TestAvailabilityChanges(t *testing.T) {

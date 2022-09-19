@@ -21,7 +21,7 @@ import (
 	"os/user"
 	"strings"
 
-	"github.com/coreos/coreos-cloudinit/config"
+	"github.com/flatcar/coreos-cloudinit/config"
 )
 
 func UserExists(u *config.User) bool {

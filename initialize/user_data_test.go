@@ -17,7 +17,7 @@ package initialize
 import (
 	"testing"
 
-	"github.com/coreos/coreos-cloudinit/config"
+	"github.com/flatcar/coreos-cloudinit/config"
 )
 
 func TestParseHeaderCRLF(t *testing.T) {
