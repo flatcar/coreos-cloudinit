@@ -180,7 +180,7 @@ func TestFetchMetadata(t *testing.T) {
 			root:         "/",
 			metadataPath: "2009-04-04/meta-data",
 			resources: map[string]string{
-				"/2009-04-04/meta-data/hostname":                  "host domain another_domain",
+				"/2009-04-04/meta-data/hostname":                  "host.local",
 				"/2009-04-04/meta-data/local-ipv4":                "1.2.3.4",
 				"/2009-04-04/meta-data/public-ipv4":               "5.6.7.8",
 				"/2009-04-04/meta-data/public-keys":               "0=test1\n",
@@ -189,6 +189,24 @@ func TestFetchMetadata(t *testing.T) {
 			},
 			expect: datasource.Metadata{
 				Hostname:      "host",
+				PrivateIPv4:   net.ParseIP("1.2.3.4"),
+				PublicIPv4:    net.ParseIP("5.6.7.8"),
+				SSHPublicKeys: map[string]string{"test1": "key"},
+			},
+		},
+		{
+			root:         "/",
+			metadataPath: "2009-04-04/meta-data",
+			resources: map[string]string{
+				"/2009-04-04/meta-data/hostname":                  "this-hostname-is-larger-than-sixty-three-characters-long-and-will-be-truncated.local",
+				"/2009-04-04/meta-data/local-ipv4":                "1.2.3.4",
+				"/2009-04-04/meta-data/public-ipv4":               "5.6.7.8",
+				"/2009-04-04/meta-data/public-keys":               "0=test1\n",
+				"/2009-04-04/meta-data/public-keys/0":             "openssh-key",
+				"/2009-04-04/meta-data/public-keys/0/openssh-key": "key",
+			},
+			expect: datasource.Metadata{
+				Hostname:      "this-hostname-is-larger-than-sixty-three-characters-long-and-wi",
 				PrivateIPv4:   net.ParseIP("1.2.3.4"),
 				PublicIPv4:    net.ParseIP("5.6.7.8"),
 				SSHPublicKeys: map[string]string{"test1": "key"},
