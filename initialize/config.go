@@ -15,7 +15,6 @@
 package initialize
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"path"
@@ -39,10 +38,29 @@ type CloudConfigUnit interface {
 	Units() []system.Unit
 }
 
+// ApplyNetworkConfig creates networkd units for the given interfaces, reloads systemd
+// and restarts networkd.
+func ApplyNetworkConfig(ifaces []network.InterfaceGenerator, env *Environment) error {
+	if len(ifaces) == 0 {
+		return nil
+	}
+	units := createNetworkingUnits(ifaces)
+
+	um := system.NewUnitManager(env.Root())
+	if err := processUnits(units, env.Root(), um); err != nil {
+		return fmt.Errorf("error processing network units: %w", err)
+	}
+
+	if err := system.RestartNetwork(ifaces); err != nil {
+		return fmt.Errorf("error restarting networkd: %w", err)
+	}
+	return nil
+}
+
 // Apply renders a CloudConfig to an Environment. This can involve things like
 // configuring the hostname, adding new users, writing various configuration
 // files to disk, and manipulating systemd services.
-func Apply(cfg config.CloudConfig, ifaces []network.InterfaceGenerator, env *Environment) error {
+func Apply(cfg config.CloudConfig, env *Environment) error {
 	if cfg.Hostname != "" {
 		if err := system.SetHostname(cfg.Hostname); err != nil {
 			return err
@@ -166,13 +184,6 @@ func Apply(cfg config.CloudConfig, ifaces []network.InterfaceGenerator, env *Env
 		}
 	}
 
-	if len(ifaces) > 0 {
-		units = append(units, createNetworkingUnits(ifaces)...)
-		if err := system.RestartNetwork(ifaces); err != nil {
-			return err
-		}
-	}
-
 	um := system.NewUnitManager(env.Root())
 	return processUnits(units, env.Root(), um)
 }
@@ -267,7 +278,7 @@ func processUnits(units []system.Unit, root string, um system.UnitManager) error
 
 	if reload {
 		if err := um.DaemonReload(); err != nil {
-			return errors.New(fmt.Sprintf("failed systemd daemon-reload: %s", err))
+			return fmt.Errorf("failed systemd daemon-reload: %w", err)
 		}
 	}
 

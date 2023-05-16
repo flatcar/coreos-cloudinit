@@ -161,7 +161,7 @@ func main() {
 		os.Exit(2)
 	}
 
-	if flags.printVersion == true {
+	if flags.printVersion {
 		fmt.Printf("coreos-cloudinit %s\n", version)
 		os.Exit(0)
 	}
@@ -186,6 +186,22 @@ func main() {
 	if ds == nil {
 		log.Println("No datasources available in time")
 		os.Exit(1)
+	}
+
+	log.Printf("Fetching meta-data from datasource of type %q\n", ds.Type())
+	metadata, err := ds.FetchMetadata()
+	if err != nil {
+		log.Printf("Failed fetching meta-data from datasource: %v\n", err)
+		os.Exit(1)
+	}
+	env := initialize.NewEnvironment("/", ds.ConfigRoot(), flags.workspace, flags.sshKeyName, metadata)
+
+	// Setup networking units
+	if flags.convertNetconf != "" {
+		if err := setupNetworkUnits(metadata.NetworkConfig, env, flags.convertNetconf); err != nil {
+			log.Printf("Failed to setup network units: %v\n", err)
+			os.Exit(1)
+		}
 	}
 
 	log.Printf("Fetching user-data from datasource of type %q\n", ds.Type())
@@ -216,15 +232,7 @@ func main() {
 		}
 	}
 
-	log.Printf("Fetching meta-data from datasource of type %q\n", ds.Type())
-	metadata, err := ds.FetchMetadata()
-	if err != nil {
-		log.Printf("Failed fetching meta-data from datasource: %v\n", err)
-		os.Exit(1)
-	}
-
 	// Apply environment to user-data
-	env := initialize.NewEnvironment("/", ds.ConfigRoot(), flags.workspace, flags.sshKeyName, metadata)
 	userdata := env.Apply(string(userdataBytes))
 
 	var ccu *config.CloudConfig
@@ -248,26 +256,7 @@ func main() {
 	log.Println("Merging cloud-config from meta-data and user-data")
 	cc := mergeConfigs(ccu, metadata)
 
-	var ifaces []network.InterfaceGenerator
-	if flags.convertNetconf != "" {
-		var err error
-		switch flags.convertNetconf {
-		case "debian":
-			ifaces, err = network.ProcessDebianNetconf(metadata.NetworkConfig.([]byte))
-		case "packet":
-			ifaces, err = network.ProcessPacketNetconf(metadata.NetworkConfig.(packet.NetworkData))
-		case "vmware":
-			ifaces, err = network.ProcessVMwareNetconf(metadata.NetworkConfig.(map[string]string))
-		default:
-			err = fmt.Errorf("Unsupported network config format %q", flags.convertNetconf)
-		}
-		if err != nil {
-			log.Printf("Failed to generate interfaces: %v\n", err)
-			os.Exit(1)
-		}
-	}
-
-	if err = initialize.Apply(cc, ifaces, env); err != nil {
+	if err = initialize.Apply(cc, env); err != nil {
 		log.Printf("Failed to apply cloud-config: %v\n", err)
 		os.Exit(1)
 	}
@@ -282,6 +271,29 @@ func main() {
 	if failure && !flags.ignoreFailure {
 		os.Exit(1)
 	}
+}
+
+func setupNetworkUnits(netConfig interface{}, env *initialize.Environment, netconf string) error {
+	var ifaces []network.InterfaceGenerator
+	var err error
+	switch netconf {
+	case "debian":
+		ifaces, err = network.ProcessDebianNetconf(netConfig.([]byte))
+	case "packet":
+		ifaces, err = network.ProcessPacketNetconf(netConfig.(packet.NetworkData))
+	case "vmware":
+		ifaces, err = network.ProcessVMwareNetconf(netConfig.(map[string]string))
+	default:
+		err = fmt.Errorf("Unsupported network config format %q", netconf)
+	}
+	if err != nil {
+		return fmt.Errorf("error generating interfaces: %w", err)
+	}
+
+	if err := initialize.ApplyNetworkConfig(ifaces, env); err != nil {
+		return fmt.Errorf("error applying network config: %w", err)
+	}
+	return nil
 }
 
 // mergeConfigs merges certain options from md (meta-data from the datasource)
