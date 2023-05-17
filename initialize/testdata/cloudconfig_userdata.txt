@@ -1,0 +1,33 @@
+#cloud-config
+
+write_files:
+-   encoding: b64
+    content: NDI=
+    path: /tmp/b64
+    permissions: '0644'
+-   encoding: base64
+    content: NDI=
+    path: /tmp/b64_1
+    permissions: '0644'
+-   encoding: gzip
+    content: !!binary |
+        H4sIAGUfoFQC/zMxAgCIsCQyAgAAAA==
+    path: /tmp/gzip
+    permissions: '0644'
+-   encoding: gz
+    content: !!binary |
+        H4sIAGUfoFQC/zMxAgCIsCQyAgAAAA==
+    path: /tmp/gzip_1
+    permissions: '0644'
+-   encoding: gz+base64
+    content: H4sIAGUfoFQC/zMxAgCIsCQyAgAAAA==
+    path: /tmp/gzip_base64
+    permissions: '0644'
+-   encoding: gzip+base64
+    content: H4sIAGUfoFQC/zMxAgCIsCQyAgAAAA==
+    path: /tmp/gzip_base64_1
+    permissions: '0644'
+-   encoding: gz+b64
+    content: H4sIAGUfoFQC/zMxAgCIsCQyAgAAAA==
+    path: /tmp/gzip_base64_2
+    permissions: '0644'

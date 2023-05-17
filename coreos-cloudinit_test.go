@@ -18,78 +18,8 @@ import (
 	"bytes"
 	"encoding/base64"
 	"errors"
-	"reflect"
 	"testing"
-
-	"github.com/flatcar/coreos-cloudinit/config"
-	"github.com/flatcar/coreos-cloudinit/datasource"
 )
-
-func TestMergeConfigs(t *testing.T) {
-	tests := []struct {
-		cc *config.CloudConfig
-		md datasource.Metadata
-
-		out config.CloudConfig
-	}{
-		{
-			// If md is empty and cc is nil, result should be empty
-			out: config.CloudConfig{},
-		},
-		{
-			// If md and cc are empty, result should be empty
-			cc:  &config.CloudConfig{},
-			out: config.CloudConfig{},
-		},
-		{
-			// If cc is empty, cc should be returned unchanged
-			cc:  &config.CloudConfig{SSHAuthorizedKeys: []string{"abc", "def"}, Hostname: "cc-host"},
-			out: config.CloudConfig{SSHAuthorizedKeys: []string{"abc", "def"}, Hostname: "cc-host"},
-		},
-		{
-			// If cc is empty, cc should be returned unchanged(overridden)
-			cc:  &config.CloudConfig{},
-			md:  datasource.Metadata{Hostname: "md-host", SSHPublicKeys: map[string]string{"key": "ghi"}},
-			out: config.CloudConfig{SSHAuthorizedKeys: []string{"ghi"}, Hostname: "md-host"},
-		},
-		{
-			// If cc is nil, cc should be returned unchanged(overridden)
-			md:  datasource.Metadata{Hostname: "md-host", SSHPublicKeys: map[string]string{"key": "ghi"}},
-			out: config.CloudConfig{SSHAuthorizedKeys: []string{"ghi"}, Hostname: "md-host"},
-		},
-		{
-			// user-data should override completely in the case of conflicts
-			cc:  &config.CloudConfig{SSHAuthorizedKeys: []string{"abc", "def"}, Hostname: "cc-host"},
-			md:  datasource.Metadata{Hostname: "md-host"},
-			out: config.CloudConfig{SSHAuthorizedKeys: []string{"abc", "def"}, Hostname: "cc-host"},
-		},
-		{
-			// Mixed merge should succeed
-			cc:  &config.CloudConfig{SSHAuthorizedKeys: []string{"abc", "def"}, Hostname: "cc-host"},
-			md:  datasource.Metadata{Hostname: "md-host", SSHPublicKeys: map[string]string{"key": "ghi"}},
-			out: config.CloudConfig{SSHAuthorizedKeys: []string{"abc", "def", "ghi"}, Hostname: "cc-host"},
-		},
-		{
-			// Completely non-conflicting merge should be fine
-			cc:  &config.CloudConfig{Hostname: "cc-host"},
-			md:  datasource.Metadata{SSHPublicKeys: map[string]string{"zaphod": "beeblebrox"}},
-			out: config.CloudConfig{Hostname: "cc-host", SSHAuthorizedKeys: []string{"beeblebrox"}},
-		},
-		{
-			// Non-mergeable settings in user-data should not be affected
-			cc:  &config.CloudConfig{Hostname: "cc-host", ManageEtcHosts: config.EtcHosts("lolz")},
-			md:  datasource.Metadata{Hostname: "md-host"},
-			out: config.CloudConfig{Hostname: "cc-host", ManageEtcHosts: config.EtcHosts("lolz")},
-		},
-	}
-
-	for i, tt := range tests {
-		out := mergeConfigs(tt.cc, tt.md)
-		if !reflect.DeepEqual(tt.out, out) {
-			t.Errorf("bad config (%d): want %#v, got %#v", i, tt.out, out)
-		}
-	}
-}
 
 func mustDecode(in string) []byte {
 	out, err := base64.StdEncoding.DecodeString(in)

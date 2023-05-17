@@ -56,6 +56,15 @@ func IsCloudConfig(userdata string) bool {
 	return (header == "#cloud-config")
 }
 
+func IsMultipartMime(userdata string) bool {
+	header := strings.SplitN(userdata, "\n", 2)[0]
+
+	// Trim trailing whitespaces
+	header = strings.TrimRightFunc(header, unicode.IsSpace)
+
+	return strings.Contains(header, "Content-Type: multipart/mixed;")
+}
+
 // NewCloudConfig instantiates a new CloudConfig from the given contents (a
 // string of YAML), returning any error encountered. It will ignore unknown
 // fields but log encountering them.
