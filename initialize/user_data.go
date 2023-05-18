@@ -41,38 +41,6 @@ const (
 	UnknownType     UserDataType = "unknown"
 )
 
-var (
-	ErrIgnitionConfig = errors.New("not a config (found Ignition)")
-)
-
-func ParseUserData(contents string) (interface{}, error) {
-	if len(contents) == 0 {
-		return nil, nil
-	}
-
-	switch {
-	case config.IsScript(contents):
-		log.Printf("Parsing user-data as script")
-		return config.NewScript(contents)
-	case config.IsCloudConfig(contents):
-		log.Printf("Parsing user-data as cloud-config")
-		cc, err := config.NewCloudConfig(contents)
-		if err != nil {
-			return nil, err
-		}
-
-		if err := cc.Decode(); err != nil {
-			return nil, err
-		}
-
-		return cc, nil
-	case config.IsIgnitionConfig(contents):
-		return nil, ErrIgnitionConfig
-	default:
-		return nil, errors.New("Unrecognized user-data format")
-	}
-}
-
 func NewUserData(payload string, env *Environment) (*UserData, error) {
 	if len(payload) == 0 {
 		return &UserData{}, nil
