@@ -261,9 +261,9 @@ func main() {
 
 	if !failure && udata != nil {
 		for _, part := range udata.Parts {
-			log.Printf("Running part %q", part.PartType())
+			log.Printf("Running part %q (%s)", part.PartName(), part.PartType())
 			if err := part.RunPart(env); err != nil {
-				log.Printf("Failed to run part: %v", err)
+				log.Printf("Failed to run part %q: %v", part.PartName(), err)
 				failure = true
 			}
 		}

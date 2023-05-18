@@ -102,17 +102,17 @@ func multipartToUserDataParts(payload string, env *Environment) ([]UserDataPart,
 		return []UserDataPart{}, fmt.Errorf("error parsing multipart MIME: %w", err)
 	}
 
-	contentType := m.Header.Get("Content-Type")
-	mediaType, params, err := mime.ParseMediaType(contentType)
+	mpHeader, err := parseMimeHeader(m.Header)
 	if err != nil {
 		return []UserDataPart{}, fmt.Errorf("error parsing header: %w", err)
 	}
-	if mediaType != "multipart/mixed" {
+
+	if mpHeader.mediaType != "multipart/mixed" {
 		// We expect a multipart/mixed message.
-		return []UserDataPart{}, fmt.Errorf("expected multipart/mixed, got %s", mediaType)
+		return []UserDataPart{}, fmt.Errorf("expected multipart/mixed, got %s", mpHeader.mediaType)
 	}
 	// get the boundary from the Content-Type header
-	boundary, ok := params["boundary"]
+	boundary, ok := mpHeader.params["boundary"]
 	if !ok {
 		return []UserDataPart{}, errors.New("no boundary found in Content-Type header")
 	}
@@ -128,27 +128,25 @@ func multipartToUserDataParts(payload string, env *Environment) ([]UserDataPart,
 			return []UserDataPart{}, fmt.Errorf("error reading part: %w", err)
 		}
 
-		partContentType := part.Header.Get("Content-Type")
-		partMediaType, _, err := mime.ParseMediaType(partContentType)
+		partHeader, err := parseMimeHeader(part.Header)
 		if err != nil {
-			return []UserDataPart{}, fmt.Errorf("error parsing header: %w", err)
+			return []UserDataPart{}, fmt.Errorf("error parsing part header: %w", err)
 		}
-		partTransferEncoding := part.Header.Get("Content-Transfer-Encoding")
 
 		body, err := io.ReadAll(part)
 		if err != nil {
 			return []UserDataPart{}, fmt.Errorf("error reading part: %w", err)
 		}
 
-		if partTransferEncoding == "base64" {
+		if partHeader.transferEncoding == "base64" {
 			body, err = base64.StdEncoding.DecodeString(string(body))
 			if err != nil {
 				return []UserDataPart{}, fmt.Errorf("error decoding base64: %w", err)
 			}
 		}
-		switch partMediaType {
+		switch partHeader.mediaType {
 		case "text/cloud-config":
-			part, err := payloadAsCloudConfigPart(string(body), env)
+			part, err := payloadAsCloudConfigPart(partHeader.fileName, string(body), env)
 			if err != nil {
 				return []UserDataPart{}, fmt.Errorf("error parsing cloud-config: %w", err)
 			}
@@ -156,7 +154,7 @@ func multipartToUserDataParts(payload string, env *Environment) ([]UserDataPart,
 			udParts = append(udParts, part)
 			continue
 		case "text/x-shellscript":
-			part, err := payloadAsScriptPart(string(body), env)
+			part, err := payloadAsScriptPart(partHeader.fileName, string(body), env)
 			if err != nil {
 				return []UserDataPart{}, fmt.Errorf("error parsing script: %w", err)
 			}
@@ -197,7 +195,7 @@ func multipartToUserDataParts(payload string, env *Environment) ([]UserDataPart,
 	return udParts, nil
 }
 
-func payloadAsScriptPart(payload string, env *Environment) (UserDataPart, error) {
+func payloadAsScriptPart(name, payload string, env *Environment) (UserDataPart, error) {
 	if env == nil {
 		return UserDataPart{}, fmt.Errorf("environment is nil")
 	}
@@ -214,10 +212,11 @@ func payloadAsScriptPart(payload string, env *Environment) (UserDataPart, error)
 		userDataType: ScriptType,
 		contents:     userdata,
 		script:       script,
+		fileName:     name,
 	}, nil
 }
 
-func payloadAsCloudConfigPart(payload string, env *Environment) (UserDataPart, error) {
+func payloadAsCloudConfigPart(name, payload string, env *Environment) (UserDataPart, error) {
 	if env == nil {
 		return UserDataPart{}, fmt.Errorf("environment is nil")
 	}
@@ -243,6 +242,7 @@ func payloadAsCloudConfigPart(payload string, env *Environment) (UserDataPart, e
 		userDataType: CloudConfigType,
 		contents:     userdata,
 		cloudConfig:  cc,
+		fileName:     name,
 	}, nil
 }
 
@@ -254,13 +254,13 @@ func partsFromUserData(payload string, env *Environment) ([]UserDataPart, error)
 	var parts []UserDataPart
 	switch {
 	case config.IsScript(payload):
-		part, err := payloadAsScriptPart(payload, env)
+		part, err := payloadAsScriptPart("userdata.sh", payload, env)
 		if err != nil {
 			return nil, fmt.Errorf("error parsing script: %w", err)
 		}
 		parts = append(parts, part)
 	case config.IsCloudConfig(payload):
-		part, err := payloadAsCloudConfigPart(payload, env)
+		part, err := payloadAsCloudConfigPart("cloud-config.yaml", payload, env)
 		if err != nil {
 			return nil, fmt.Errorf("error parsing cloud-config: %w", err)
 		}
@@ -271,6 +271,7 @@ func partsFromUserData(payload string, env *Environment) ([]UserDataPart, error)
 		part := UserDataPart{
 			userDataType: IgnitionType,
 			contents:     payload,
+			fileName:     "ignition.json",
 		}
 		parts = append(parts, part)
 	case config.IsMultipartMime(payload):
@@ -283,6 +284,7 @@ func partsFromUserData(payload string, env *Environment) ([]UserDataPart, error)
 		parts = append(parts, UserDataPart{
 			userDataType: UnknownType,
 			contents:     payload,
+			fileName:     "userdata.txt",
 		})
 	}
 
@@ -292,6 +294,7 @@ func partsFromUserData(payload string, env *Environment) ([]UserDataPart, error)
 type UserDataPart struct {
 	userDataType UserDataType
 	contents     string
+	fileName     string
 
 	cloudConfig *config.CloudConfig
 	script      *config.Script
@@ -299,6 +302,10 @@ type UserDataPart struct {
 
 func (udp *UserDataPart) PartType() UserDataType {
 	return udp.userDataType
+}
+
+func (udp *UserDataPart) PartName() string {
+	return udp.fileName
 }
 
 func (udp *UserDataPart) IsCloudConfig() bool {
@@ -402,4 +409,48 @@ func (ud *UserData) FindSSHKeys(additionalKeys []string) []string {
 		}
 	}
 	return append(keys, additionalKeys...)
+}
+
+type headerGetter interface {
+	Get(key string) string
+}
+
+func parseMimeHeader[T headerGetter](header T) (headerInfo, error) {
+	contentType := header.Get("Content-Type")
+	if contentType == "" {
+		return headerInfo{}, errors.New("no Content-Type header found")
+	}
+
+	mediaType, params, err := mime.ParseMediaType(contentType)
+	if err != nil {
+		return headerInfo{}, fmt.Errorf("error parsing header: %w", err)
+	}
+	partTransferEncoding := header.Get("Content-Transfer-Encoding")
+
+	var contentDisposition string
+	var fileName string
+	contentDispositionHeader := header.Get("Content-Disposition")
+	if contentDispositionHeader != "" {
+		mediaType, params, err := mime.ParseMediaType(contentDispositionHeader)
+		if err != nil {
+			return headerInfo{}, fmt.Errorf("error parsing header: %w", err)
+		}
+		contentDisposition = mediaType
+		fileName = params["filename"]
+	}
+	return headerInfo{
+		mediaType:          mediaType,
+		params:             params,
+		transferEncoding:   partTransferEncoding,
+		contentDisposition: contentDisposition,
+		fileName:           fileName,
+	}, nil
+}
+
+type headerInfo struct {
+	mediaType          string
+	params             map[string]string
+	fileName           string
+	contentDisposition string
+	transferEncoding   string
 }
