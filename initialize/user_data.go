@@ -346,19 +346,13 @@ func (ud *UserData) FindHostname() string {
 }
 
 func (ud *UserData) FindSSHKeys(additionalKeys []string) []string {
-	keys := []string{}
-	hasKey := func(key string) bool {
-		for _, k := range keys {
-			if k == key {
-				return true
-			}
-		}
-		return false
-	}
+	keys := make(map[string]struct{})
 
 	for _, part := range ud.Parts {
 		if part.cloudConfig != nil {
-			keys = append(keys, part.cloudConfig.SSHAuthorizedKeys...)
+			for _, key := range part.cloudConfig.SSHAuthorizedKeys {
+				keys[key] = struct{}{}
+			}
 
 			if part.cloudConfig.Users != nil {
 				for _, user := range part.cloudConfig.Users {
@@ -367,23 +361,26 @@ func (ud *UserData) FindSSHKeys(additionalKeys []string) []string {
 					}
 
 					// The "core" user is the default user on coreos systems. Append these keys to the list.
+					// TODO(gabriel-samfira): make the default user configurable?
 					for _, key := range user.SSHAuthorizedKeys {
-						if !hasKey(key) {
-							keys = append(keys, key)
-						}
+						keys[key] = struct{}{}
 					}
 				}
 			}
 		}
 	}
-	return append(keys, additionalKeys...)
+	ret := []string{}
+	for key := range keys {
+		ret = append(ret, key)
+	}
+	return append(ret, additionalKeys...)
 }
 
 type headerGetter interface {
 	Get(key string) string
 }
 
-func parseMimeHeader[T headerGetter](header T) (headerInfo, error) {
+func parseMimeHeader(header headerGetter) (headerInfo, error) {
 	contentType := header.Get("Content-Type")
 	if contentType == "" {
 		return headerInfo{}, errors.New("no Content-Type header found")
