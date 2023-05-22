@@ -51,12 +51,10 @@ func ApplyCoreUserSSHKeys(keys []string, env *Environment) error {
 		return nil
 	}
 	err := system.AuthorizeSSHKeys("core", env.SSHKeyName(), keys)
-	if err == nil {
-		log.Printf("Authorized SSH keys for core user")
-	} else {
+	if err != nil {
 		return err
 	}
-
+	log.Printf("Authorized SSH keys for core user")
 	return nil
 }
 
