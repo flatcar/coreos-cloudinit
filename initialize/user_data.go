@@ -67,7 +67,7 @@ func multipartToUserDataParts(payload string, env *Environment) ([]UserDataPart,
 	reader := strings.NewReader(payload)
 	m, err := mail.ReadMessage(reader)
 	if err != nil {
-		return []UserDataPart{}, fmt.Errorf("error parsing multipart MIME: %w", err)
+		return nil, fmt.Errorf("error parsing multipart MIME: %w", err)
 	}
 
 	mpHeader, err := parseMimeHeader(m.Header)
