@@ -216,7 +216,7 @@ func payloadAsCloudConfigPart(name, payload string, env *Environment) (UserDataP
 
 func partsFromUserData(payload string, env *Environment) ([]UserDataPart, error) {
 	if env == nil {
-		return []UserDataPart{}, fmt.Errorf("environment is nil")
+		return nil, fmt.Errorf("environment is nil")
 	}
 
 	var parts []UserDataPart
