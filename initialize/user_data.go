@@ -204,7 +204,7 @@ func payloadAsCloudConfigPart(name, payload string, env *Environment) (UserDataP
 		// of the userdata from the Content-Type header, so we don't require that the body contain
 		// the header, but it simplifies our lives if we add it here, as there are functions that look
 		// for it in other parts of the codebase.
-		userdata += "#cloud-config\n\n"
+		userdata = "#cloud-config\n\n" + userdata
 	}
 	return UserDataPart{
 		userDataType: CloudConfigType,
