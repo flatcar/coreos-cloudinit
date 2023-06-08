@@ -1,0 +1,114 @@
+Content-Type: multipart/mixed; boundary="===============1598784645116016685=="
+MIME-Version: 1.0
+
+--===============1598784645116016685==
+Content-Type: text/cloud-config; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="cloud-config"
+
+ssh_authorized_keys:
+  - ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEftQIHTRvUmyDCN7VGve4srz03Jmq6rPnqq+XMHMQUIL9c/b0l7B5tWfQvQecKyLte94HOPzAyMJlktWTVGQnY=
+
+--===============1598784645116016685==
+Content-Type: text/cloud-config; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="cloud-config"
+
+hostname: "example"
+
+--===============1598784645116016685==
+Content-Type: text/cloud-config; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="cloud-config"
+
+write_files:
+-   encoding: b64
+    content: NDI=
+    path: /tmp/b64
+    permissions: '0644'
+-   encoding: base64
+    content: NDI=
+    path: /tmp/b64_1
+    permissions: '0644'
+-   encoding: gzip
+    content: !!binary |
+        H4sIAGUfoFQC/zMxAgCIsCQyAgAAAA==
+    path: /tmp/gzip
+    permissions: '0644'
+-   encoding: gz
+    content: !!binary |
+        H4sIAGUfoFQC/zMxAgCIsCQyAgAAAA==
+    path: /tmp/gzip_1
+    permissions: '0644'
+-   encoding: gz+base64
+    content: H4sIAGUfoFQC/zMxAgCIsCQyAgAAAA==
+    path: /tmp/gzip_base64
+    permissions: '0644'
+-   encoding: gzip+base64
+    content: H4sIAGUfoFQC/zMxAgCIsCQyAgAAAA==
+    path: /tmp/gzip_base64_1
+    permissions: '0644'
+-   encoding: gz+b64
+    content: H4sIAGUfoFQC/zMxAgCIsCQyAgAAAA==
+    path: /tmp/gzip_base64_2
+    permissions: '0644'
+
+--===============1598784645116016685==
+Content-Type: text/x-shellscript; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="create_file.ps1"
+
+#!/bin/sh
+touch /tmp/coreos-cloudinit_multipart.txt
+
+--===============1598784645116016685==
+Content-Type: text/cloud-config; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="cloud-config"
+
+#test_to_check_if_cloud_config_can_contain_a_comment
+
+--===============1598784645116016685==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="some_text.txt"
+
+This is just some random text.
+
+--===============1598784645116016685==
+Content-Type: application/json; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="ignition.txt"
+
+{
+  "ignitionVersion": 1,
+  "ignition": {
+    "version": "3.0.0"
+  },
+  "systemd": {
+    "units": [{
+      "name": "example.service",
+      "enabled": true,
+      "contents": "[Service]\nType=oneshot\nExecStart=/usr/bin/echo Hello World\n\n[Install]\nWantedBy=multi-user.target"
+    }]
+  }
+}
+
+--===============1598784645116016685==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="incognito_cloud_config.txt"
+
+#cloud-config
+
+hostname: "undercover"
+
+--===============1598784645116016685==--

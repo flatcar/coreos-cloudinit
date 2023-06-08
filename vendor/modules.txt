@@ -7,17 +7,27 @@ github.com/coreos/go-systemd/dbus
 # github.com/coreos/yaml v0.0.0-20141224210557-6b16a5714269
 ## explicit
 github.com/coreos/yaml
+# github.com/davecgh/go-spew v1.1.1
+## explicit
+github.com/davecgh/go-spew/spew
 # github.com/dotcloud/docker v0.11.2-0.20140522020950-55d41c3e21e1
 ## explicit
 github.com/dotcloud/docker/pkg/netlink
 # github.com/guelfey/go.dbus v0.0.0-20131113121618-f6a3a2366cc3
 ## explicit
 github.com/guelfey/go.dbus
+# github.com/pmezard/go-difflib v1.0.0
+## explicit
+github.com/pmezard/go-difflib/difflib
 # github.com/sigma/vmw-ovflib v0.0.0-20150531125353-56b4f44581ca
 ## explicit
 github.com/sigma/vmw-ovflib
 # github.com/smartystreets/goconvey v1.7.2
 ## explicit; go 1.16
+# github.com/stretchr/testify v1.8.2
+## explicit; go 1.13
+github.com/stretchr/testify/assert
+github.com/stretchr/testify/require
 # github.com/tarm/goserial v0.0.0-20140420040555-cdabc8d44e8e
 ## explicit
 github.com/tarm/goserial
@@ -30,4 +40,7 @@ github.com/vmware/vmw-guestinfo/rpcvmx
 github.com/vmware/vmw-guestinfo/vmcheck
 # gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c
 ## explicit; go 1.11
+# gopkg.in/yaml.v3 v3.0.1
+## explicit
+gopkg.in/yaml.v3
 # github.com/vmware/vmw-guestinfo => github.com/sigma/vmw-guestinfo v0.0.0-20170622145319-ab8497750719

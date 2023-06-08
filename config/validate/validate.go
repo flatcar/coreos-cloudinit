@@ -44,9 +44,11 @@ func Validate(userdataBytes []byte) (Report, error) {
 		return Report{}, nil
 	case config.IsCloudConfig(string(userdataBytes)):
 		return validateCloudConfig(userdataBytes, Rules)
+	case config.IsMultipartMime(string(userdataBytes)):
+		return Report{}, nil
 	default:
 		return Report{entries: []Entry{
-			{kind: entryError, message: `must be "#cloud-config" or begin with "#!"`, line: 1},
+			{kind: entryError, message: `must be "#cloud-config", multipart mime or begin with "#!"`, line: 1},
 		}}, nil
 	}
 }

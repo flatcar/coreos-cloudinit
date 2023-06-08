@@ -161,7 +161,7 @@ func main() {
 		os.Exit(2)
 	}
 
-	if flags.printVersion == true {
+	if flags.printVersion {
 		fmt.Printf("coreos-cloudinit %s\n", version)
 		os.Exit(0)
 	}
@@ -186,6 +186,22 @@ func main() {
 	if ds == nil {
 		log.Println("No datasources available in time")
 		os.Exit(1)
+	}
+
+	log.Printf("Fetching meta-data from datasource of type %q\n", ds.Type())
+	metadata, err := ds.FetchMetadata()
+	if err != nil {
+		log.Printf("Failed fetching meta-data from datasource: %v\n", err)
+		os.Exit(1)
+	}
+	env := initialize.NewEnvironment("/", ds.ConfigRoot(), flags.workspace, flags.sshKeyName, metadata)
+
+	// Setup networking units
+	if flags.convertNetconf != "" {
+		if err := setupNetworkUnits(metadata.NetworkConfig, env, flags.convertNetconf); err != nil {
+			log.Printf("Failed to setup network units: %v\n", err)
+			os.Exit(1)
+		}
 	}
 
 	log.Printf("Fetching user-data from datasource of type %q\n", ds.Type())
@@ -216,66 +232,40 @@ func main() {
 		}
 	}
 
-	log.Printf("Fetching meta-data from datasource of type %q\n", ds.Type())
-	metadata, err := ds.FetchMetadata()
+	udata, err := initialize.NewUserData(string(userdataBytes), env)
 	if err != nil {
-		log.Printf("Failed fetching meta-data from datasource: %v\n", err)
-		os.Exit(1)
-	}
-
-	// Apply environment to user-data
-	env := initialize.NewEnvironment("/", ds.ConfigRoot(), flags.workspace, flags.sshKeyName, metadata)
-	userdata := env.Apply(string(userdataBytes))
-
-	var ccu *config.CloudConfig
-	var script *config.Script
-	switch ud, err := initialize.ParseUserData(userdata); err {
-	case initialize.ErrIgnitionConfig:
-		fmt.Printf("Detected an Ignition config. Exiting...")
-		os.Exit(0)
-	case nil:
-		switch t := ud.(type) {
-		case *config.CloudConfig:
-			ccu = t
-		case *config.Script:
-			script = t
-		}
-	default:
-		fmt.Printf("Failed to parse user-data: %v\nContinuing...\n", err)
+		log.Printf("Failed to parse user-data: %v\nContinuing...\n", err)
 		failure = true
 	}
 
-	log.Println("Merging cloud-config from meta-data and user-data")
-	cc := mergeConfigs(ccu, metadata)
-
-	var ifaces []network.InterfaceGenerator
-	if flags.convertNetconf != "" {
-		var err error
-		switch flags.convertNetconf {
-		case "debian":
-			ifaces, err = network.ProcessDebianNetconf(metadata.NetworkConfig.([]byte))
-		case "packet":
-			ifaces, err = network.ProcessPacketNetconf(metadata.NetworkConfig.(packet.NetworkData))
-		case "vmware":
-			ifaces, err = network.ProcessVMwareNetconf(metadata.NetworkConfig.(map[string]string))
-		default:
-			err = fmt.Errorf("Unsupported network config format %q", flags.convertNetconf)
-		}
-		if err != nil {
-			log.Printf("Failed to generate interfaces: %v\n", err)
-			os.Exit(1)
-		}
+	mustStop := false
+	hostname := determineHostname(metadata, udata)
+	if err := initialize.ApplyHostname(hostname); err != nil {
+		log.Printf("Failed to set hostname: %v", err)
+		mustStop = true
 	}
 
-	if err = initialize.Apply(cc, ifaces, env); err != nil {
-		log.Printf("Failed to apply cloud-config: %v\n", err)
+	mergedKeys := mergeSSHKeysFromSources(metadata, udata)
+	if err := initialize.ApplyCoreUserSSHKeys(mergedKeys, env); err != nil {
+		log.Printf("Failed to apply SSH keys: %v", err)
+		mustStop = true
+	}
+
+	if mustStop {
+		// We try to set both the hostname and SSH keys. If either fails, we stop.
+		// We don't stop if hostname fails to be set, because we may still be able to set
+		// the SSH keys and access the server to debug. However, if an error is encountered
+		// in either of the two operations, we exit with a non-zero status.
 		os.Exit(1)
 	}
 
-	if script != nil {
-		if err = runScript(*script, env); err != nil {
-			log.Printf("Failed to run script: %v\n", err)
-			os.Exit(1)
+	if !failure && udata != nil {
+		for _, part := range udata.Parts {
+			log.Printf("Running part %q (%s)", part.PartName(), part.PartType())
+			if err := part.RunPart(env); err != nil {
+				log.Printf("Failed to run part %q: %v", part.PartName(), err)
+				failure = true
+			}
 		}
 	}
 
@@ -284,25 +274,56 @@ func main() {
 	}
 }
 
-// mergeConfigs merges certain options from md (meta-data from the datasource)
-// onto cc (a CloudConfig derived from user-data), if they are not already set
-// on cc (i.e. user-data always takes precedence)
-func mergeConfigs(cc *config.CloudConfig, md datasource.Metadata) (out config.CloudConfig) {
-	if cc != nil {
-		out = *cc
-	}
-
-	if md.Hostname != "" {
-		if out.Hostname != "" {
-			log.Printf("Warning: user-data hostname (%s) overrides metadata hostname (%s)\n", out.Hostname, md.Hostname)
-		} else {
-			out.Hostname = md.Hostname
+// determineHostname returns either the hostname from the metadata, or the hostname from the
+// supplied cloud-config. The cloud-config hostname takes precedence, and we stop after the first
+// cloud-config that gives us a hostname.
+func determineHostname(md datasource.Metadata, udata *initialize.UserData) string {
+	hostname := md.Hostname
+	if udata != nil {
+		udataHostname := udata.FindHostname()
+		if udataHostname != "" {
+			hostname = udataHostname
 		}
 	}
+	return hostname
+}
+
+// mergeSSHKeysFromSources creates a list of all SSH keys from meta-data and the supplied
+// cloud-config sources.
+func mergeSSHKeysFromSources(md datasource.Metadata, udata *initialize.UserData) []string {
+	keys := []string{}
 	for _, key := range md.SSHPublicKeys {
-		out.SSHAuthorizedKeys = append(out.SSHAuthorizedKeys, key)
+		keys = append(keys, key)
 	}
-	return
+
+	if udata != nil {
+		return udata.FindSSHKeys(keys)
+	}
+
+	return keys
+}
+
+func setupNetworkUnits(netConfig interface{}, env *initialize.Environment, netconf string) error {
+	var ifaces []network.InterfaceGenerator
+	var err error
+	switch netconf {
+	case "debian":
+		ifaces, err = network.ProcessDebianNetconf(netConfig.([]byte))
+	case "packet":
+		ifaces, err = network.ProcessPacketNetconf(netConfig.(packet.NetworkData))
+	case "vmware":
+		ifaces, err = network.ProcessVMwareNetconf(netConfig.(map[string]string))
+	default:
+		err = fmt.Errorf("Unsupported network config format %q", netconf)
+	}
+	if err != nil {
+		return fmt.Errorf("error generating interfaces: %w", err)
+	}
+
+	if err := initialize.ApplyNetworkConfig(ifaces, env); err != nil {
+		return fmt.Errorf("error applying network config: %w", err)
+	}
+	return nil
 }
 
 // getDatasources creates a slice of possible Datasources for cloudinit based

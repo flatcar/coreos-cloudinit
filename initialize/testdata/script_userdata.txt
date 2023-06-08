@@ -1,0 +1,3 @@
+#!/bin/sh
+
+touch /tmp/coreos-cloudinit_multipart.txt

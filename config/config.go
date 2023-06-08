@@ -15,7 +15,9 @@
 package config
 
 import (
+	"bufio"
 	"fmt"
+	"net/textproto"
 	"reflect"
 	"regexp"
 	"strings"
@@ -54,6 +56,18 @@ func IsCloudConfig(userdata string) bool {
 	header = strings.TrimRightFunc(header, unicode.IsSpace)
 
 	return (header == "#cloud-config")
+}
+
+func IsMultipartMime(userdata string) bool {
+	bufioReader := bufio.NewReader(strings.NewReader(userdata))
+	textProtoReader := textproto.NewReader(bufioReader)
+	header, err := textProtoReader.ReadMIMEHeader()
+	if err != nil {
+		return false
+	}
+
+	contentType := header.Get("Content-Type")
+	return strings.Contains(contentType, "multipart/mixed")
 }
 
 // NewCloudConfig instantiates a new CloudConfig from the given contents (a

@@ -15,7 +15,6 @@
 package initialize
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"path"
@@ -39,17 +38,49 @@ type CloudConfigUnit interface {
 	Units() []system.Unit
 }
 
+func ApplyHostname(hostname string) error {
+	if err := system.SetHostname(hostname); err != nil {
+		return fmt.Errorf("error setting hostname: %w", err)
+	}
+	log.Printf("Set hostname to %s", hostname)
+	return nil
+}
+
+func ApplyCoreUserSSHKeys(keys []string, env *Environment) error {
+	if len(keys) == 0 {
+		return nil
+	}
+	err := system.AuthorizeSSHKeys("core", env.SSHKeyName(), keys)
+	if err != nil {
+		return err
+	}
+	log.Printf("Authorized SSH keys for core user")
+	return nil
+}
+
+// ApplyNetworkConfig creates networkd units for the given interfaces, reloads systemd
+// and restarts networkd.
+func ApplyNetworkConfig(ifaces []network.InterfaceGenerator, env *Environment) error {
+	if len(ifaces) == 0 {
+		return nil
+	}
+	units := createNetworkingUnits(ifaces)
+
+	um := system.NewUnitManager(env.Root())
+	if err := processUnits(units, env.Root(), um); err != nil {
+		return fmt.Errorf("error processing network units: %w", err)
+	}
+
+	if err := system.RestartNetwork(ifaces); err != nil {
+		return fmt.Errorf("error restarting networkd: %w", err)
+	}
+	return nil
+}
+
 // Apply renders a CloudConfig to an Environment. This can involve things like
 // configuring the hostname, adding new users, writing various configuration
 // files to disk, and manipulating systemd services.
-func Apply(cfg config.CloudConfig, ifaces []network.InterfaceGenerator, env *Environment) error {
-	if cfg.Hostname != "" {
-		if err := system.SetHostname(cfg.Hostname); err != nil {
-			return err
-		}
-		log.Printf("Set hostname to %s", cfg.Hostname)
-	}
-
+func Apply(cfg config.CloudConfig, env *Environment) error {
 	for _, user := range cfg.Users {
 		if user.Name == "" {
 			log.Printf("User object has no 'name' field, skipping")
@@ -73,7 +104,9 @@ func Apply(cfg config.CloudConfig, ifaces []network.InterfaceGenerator, env *Env
 			}
 		}
 
-		if len(user.SSHAuthorizedKeys) > 0 {
+		// If this is the "core" user, we skip adding the ssh keys from SSHAuthorizedKeys. Those keys will
+		// be added later along any other keys we fetch from user-data and metadata.
+		if len(user.SSHAuthorizedKeys) > 0 && user.Name != "core" {
 			log.Printf("Authorizing %d SSH keys for user '%s'", len(user.SSHAuthorizedKeys), user.Name)
 			if err := system.AuthorizeSSHKeys(user.Name, env.SSHKeyName(), user.SSHAuthorizedKeys); err != nil {
 				return err
@@ -96,15 +129,6 @@ func Apply(cfg config.CloudConfig, ifaces []network.InterfaceGenerator, env *Env
 			if err := SSHImportKeysFromURL(user.Name, user.SSHImportURL); err != nil {
 				return err
 			}
-		}
-	}
-
-	if len(cfg.SSHAuthorizedKeys) > 0 {
-		err := system.AuthorizeSSHKeys("core", env.SSHKeyName(), cfg.SSHAuthorizedKeys)
-		if err == nil {
-			log.Printf("Authorized SSH keys for core user")
-		} else {
-			return err
 		}
 	}
 
@@ -163,13 +187,6 @@ func Apply(cfg config.CloudConfig, ifaces []network.InterfaceGenerator, env *Env
 				return err
 			}
 			log.Printf("Updated /etc/environment")
-		}
-	}
-
-	if len(ifaces) > 0 {
-		units = append(units, createNetworkingUnits(ifaces)...)
-		if err := system.RestartNetwork(ifaces); err != nil {
-			return err
 		}
 	}
 
@@ -267,7 +284,7 @@ func processUnits(units []system.Unit, root string, um system.UnitManager) error
 
 	if reload {
 		if err := um.DaemonReload(); err != nil {
-			return errors.New(fmt.Sprintf("failed systemd daemon-reload: %s", err))
+			return fmt.Errorf("failed systemd daemon-reload: %w", err)
 		}
 	}
 
