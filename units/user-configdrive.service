@@ -13,7 +13,7 @@ Before=user-config.target
 # systemd knows about the ordering as early as possible.
 # coreos-cloudinit could implement a simple lock but that cannot be used
 # until after the systemd dbus calls are made non-blocking.
-After=oem-cloudinit.service
+After=enable-oem-cloudinit.service oem-cloudinit.service
 
 [Service]
 Type=oneshot
