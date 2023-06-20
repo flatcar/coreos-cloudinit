@@ -15,6 +15,10 @@ Before=user-config.target
 # until after the systemd dbus calls are made non-blocking.
 After=enable-oem-cloudinit.service oem-cloudinit.service
 
+# Skip on clouds that are covered by flatcar/init:systemd/system/oem-cloudinit.service
+ConditionKernelCommandLine=!flatcar.oem.id=digitalocean
+ConditionKernelCommandLine=!coreos.oem.id=digitalocean
+
 [Service]
 Type=oneshot
 TimeoutSec=10min
