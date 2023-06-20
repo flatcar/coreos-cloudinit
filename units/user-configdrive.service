@@ -13,7 +13,11 @@ Before=user-config.target
 # systemd knows about the ordering as early as possible.
 # coreos-cloudinit could implement a simple lock but that cannot be used
 # until after the systemd dbus calls are made non-blocking.
-After=oem-cloudinit.service
+After=enable-oem-cloudinit.service oem-cloudinit.service
+
+# Skip on clouds that are covered by flatcar/init:systemd/system/oem-cloudinit.service
+ConditionKernelCommandLine=!flatcar.oem.id=digitalocean
+ConditionKernelCommandLine=!coreos.oem.id=digitalocean
 
 [Service]
 Type=oneshot
