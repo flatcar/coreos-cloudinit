@@ -1,5 +1,5 @@
 [Unit]
-Wants=user-configvirtfs.service
+Upholds=user-configvirtfs.service
 Before=user-configvirtfs.service
 # Only mount config drive block devices automatically in virtual machines
 # or any host that has it explicitly enabled and not explicitly disabled.
