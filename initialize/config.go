@@ -39,6 +39,9 @@ type CloudConfigUnit interface {
 }
 
 func ApplyHostname(hostname string) error {
+	if hostname == "" {
+		return nil
+	}
 	if err := system.SetHostname(hostname); err != nil {
 		return fmt.Errorf("error setting hostname: %w", err)
 	}
