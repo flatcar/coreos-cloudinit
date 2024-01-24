@@ -2,8 +2,6 @@ github.com/cloudsigma/cepgo v0.0.0-20140805094338-1bfc4895bf5c h1:RMx9SFbDpSl/jY
 github.com/cloudsigma/cepgo v0.0.0-20140805094338-1bfc4895bf5c/go.mod h1:6Pooq9nOzi3YTaXMNF+0W7POfgQhIm5z8RquoPB9Sf4=
 github.com/coreos/go-systemd v0.0.0-20140326023052-4fbc5060a317 h1:OJi3CY9dHDNVEdfBSMxkV6W6ay3YFxl9ThzgigsDVlM=
 github.com/coreos/go-systemd v0.0.0-20140326023052-4fbc5060a317/go.mod h1:F5haX7vjVVG0kc13fIWeqUViNPyEJxv/OmvnBo0Yme4=
-github.com/coreos/yaml v0.0.0-20141224210557-6b16a5714269 h1:/1sjrpK5Mb6IwyFOKd+u7321tXfNAsj0Ci8CivZmSlo=
-github.com/coreos/yaml v0.0.0-20141224210557-6b16a5714269/go.mod h1:Bl1D/T9QJhVdu6eFoLrGxN90+admDLGaLz2HXH/VzDc=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
