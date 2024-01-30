@@ -93,16 +93,27 @@ func toNode(v interface{}, c context, n *node) {
 			n.children = append(n.children, cn)
 		}
 	case reflect.Map:
-		// Walk over each key in the map and create a node for it.
-		v := v.(map[interface{}]interface{})
-		for k, cv := range v {
+		handleKV := func(k, v interface{}) {
 			cn := node{name: fmt.Sprintf("%s", k)}
 			c, ok := findKey(cn.name, c)
 			if ok {
 				cn.line = c.lineNumber
 			}
-			toNode(cv, c, &cn)
+			toNode(v, c, &cn)
 			n.children = append(n.children, cn)
+		}
+		// Walk over each key in the map and create a node for it.
+		cpv := v
+		v, ok := cpv.(map[interface{}]interface{})
+		if ok {
+			for k, cv := range v {
+				handleKV(k, cv)
+			}
+		} else {
+			sv := cpv.(map[string]interface{})
+			for k, cv := range sv {
+				handleKV(k, cv)
+			}
 		}
 	case reflect.Slice:
 		// Walk over each element in the slice and create a node for it.
