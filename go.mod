@@ -1,6 +1,6 @@
 module github.com/flatcar/coreos-cloudinit
 
-go 1.18
+go 1.20
 
 require (
 	github.com/cloudsigma/cepgo v0.0.0-20140805094338-1bfc4895bf5c
