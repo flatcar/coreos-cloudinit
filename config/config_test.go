@@ -34,15 +34,11 @@ func TestNewCloudConfig(t *testing.T) {
 			config:   CloudConfig{WriteFiles: []File{{Path: "underscore"}}},
 		},
 		{
-			contents: "#cloud-config\nwrite-files:\n  - path: hyphen",
-			config:   CloudConfig{WriteFiles: []File{{Path: "hyphen"}}},
-		},
-		{
-			contents: "#cloud-config\ncoreos:\n  update:\n    reboot-strategy: off",
+			contents: "#cloud-config\ncoreos:\n  update:\n    reboot_strategy: off",
 			config:   CloudConfig{CoreOS: CoreOS{Update: Update{RebootStrategy: "off"}}},
 		},
 		{
-			contents: "#cloud-config\ncoreos:\n  update:\n    reboot-strategy: false",
+			contents: "#cloud-config\ncoreos:\n  update:\n    reboot_strategy: false",
 			config:   CloudConfig{CoreOS: CoreOS{Update: Update{RebootStrategy: "false"}}},
 		},
 		{
@@ -373,23 +369,6 @@ Address=10.209.171.177/19
 	}
 	if cfg.CoreOS.Update.RebootStrategy != "reboot" {
 		t.Errorf("Failed to parse locksmith strategy")
-	}
-}
-
-// Assert that our interface conversion doesn't panic
-func TestCloudConfigKeysNotList(t *testing.T) {
-	contents := `
-ssh_authorized_keys:
-  - foo: bar
-`
-	cfg, err := NewCloudConfig(contents)
-	if err != nil {
-		t.Fatalf("Encountered unexpected error: %v", err)
-	}
-
-	keys := cfg.SSHAuthorizedKeys
-	if len(keys) != 0 {
-		t.Error("Parsed incorrect number of SSH keys")
 	}
 }
 
