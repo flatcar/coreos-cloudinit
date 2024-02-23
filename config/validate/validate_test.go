@@ -28,7 +28,7 @@ func TestParseCloudConfig(t *testing.T) {
 	}{
 		{},
 		{
-			config: "	",
+			config:  "	",
 			entries: []Entry{{entryError, "found character that cannot start any token", 1}},
 		},
 		{
@@ -80,11 +80,11 @@ func TestValidateCloudConfig(t *testing.T) {
 			rules:  Rules,
 		},
 		{
-			config: "coreos:\n  update:\n    reboot-strategy: off",
+			config: "coreos:\n  update:\n    reboot_strategy: off",
 			rules:  Rules,
 		},
 		{
-			config: "coreos:\n  update:\n    reboot-strategy: false",
+			config: "coreos:\n  update:\n    reboot_strategy: false",
 			rules:  Rules,
 			report: Report{entries: []Entry{{entryError, "invalid value false", 3}}},
 		},

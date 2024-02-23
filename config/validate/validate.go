@@ -23,12 +23,12 @@ import (
 
 	"github.com/flatcar/coreos-cloudinit/config"
 
-	"github.com/coreos/yaml"
+	"gopkg.in/yaml.v3"
 )
 
 var (
-	yamlLineError = regexp.MustCompile(`^YAML error: line (?P<line>[[:digit:]]+): (?P<msg>.*)$`)
-	yamlError     = regexp.MustCompile(`^YAML error: (?P<msg>.*)$`)
+	yamlLineError = regexp.MustCompile(`^yaml: line (?P<line>[[:digit:]]+): (?P<msg>.*)$`)
+	yamlError     = regexp.MustCompile(`^yaml: (?P<msg>.*)$`)
 )
 
 // Validate runs a series of validation tests against the given userdata and
@@ -77,9 +77,6 @@ func validateCloudConfig(config []byte, rules []rule) (report Report, err error)
 // any parsing issues into the provided report. Unrecoverable errors are
 // returned as an error.
 func parseCloudConfig(cfg []byte, report *Report) (node, error) {
-	yaml.UnmarshalMappingKeyTransform = func(nameIn string) (nameOut string) {
-		return nameIn
-	}
 	// unmarshal the config into an implicitly-typed form. The yaml library
 	// will implicitly convert types into their normalized form
 	// (e.g. 0744 -> 484, off -> false).
@@ -108,9 +105,6 @@ func parseCloudConfig(cfg []byte, report *Report) (node, error) {
 	w = normalizeNodeNames(w, report)
 
 	// unmarshal the config into the explicitly-typed form.
-	yaml.UnmarshalMappingKeyTransform = func(nameIn string) (nameOut string) {
-		return strings.Replace(nameIn, "-", "_", -1)
-	}
 	var strong config.CloudConfig
 	if err := yaml.Unmarshal([]byte(cfg), &strong); err != nil {
 		return node{}, err

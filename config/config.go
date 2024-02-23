@@ -23,7 +23,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/coreos/yaml"
+	"gopkg.in/yaml.v3"
 )
 
 // CloudConfig encapsulates the entire cloud-config configuration file and maps
@@ -74,9 +74,6 @@ func IsMultipartMime(userdata string) bool {
 // string of YAML), returning any error encountered. It will ignore unknown
 // fields but log encountering them.
 func NewCloudConfig(contents string) (*CloudConfig, error) {
-	yaml.UnmarshalMappingKeyTransform = func(nameIn string) (nameOut string) {
-		return strings.Replace(nameIn, "-", "_", -1)
-	}
 	var cfg CloudConfig
 	err := yaml.Unmarshal([]byte(contents), &cfg)
 	return &cfg, err

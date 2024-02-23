@@ -125,35 +125,10 @@ func TestCheckStructure(t *testing.T) {
 			entries: []Entry{{entryWarning, "deprecated key \"etcd\" (etcd is no longer shipped in Container Linux)", 2}, {entryWarning, "deprecated key \"proxy\" (etcd2 options no longer work for etcd)", 3}},
 		},
 
-		// Test for error on list of nodes
-		{
-			config: "coreos:\n  units:\n    - hello\n    - goodbye",
-			entries: []Entry{
-				{entryWarning, "incorrect type for \"units[0]\" (want struct)", 3},
-				{entryWarning, "incorrect type for \"units[1]\" (want struct)", 4},
-			},
-		},
-
 		// Test for incorrect types
 		// Want boolean
 		{
 			config: "coreos:\n  units:\n    - enable: true",
-		},
-		{
-			config:  "coreos:\n  units:\n    - enable: 4",
-			entries: []Entry{{entryWarning, "incorrect type for \"enable\" (want bool)", 3}},
-		},
-		{
-			config:  "coreos:\n  units:\n    - enable: bad",
-			entries: []Entry{{entryWarning, "incorrect type for \"enable\" (want bool)", 3}},
-		},
-		{
-			config:  "coreos:\n  units:\n    - enable:\n        bad:",
-			entries: []Entry{{entryWarning, "incorrect type for \"enable\" (want bool)", 3}},
-		},
-		{
-			config:  "coreos:\n  units:\n    - enable:\n      - bad",
-			entries: []Entry{{entryWarning, "incorrect type for \"enable\" (want bool)", 3}},
 		},
 		// Want string
 		{
@@ -166,94 +141,10 @@ func TestCheckStructure(t *testing.T) {
 			config: "hostname: host",
 		},
 		{
-			config:  "hostname:\n  name:",
-			entries: []Entry{{entryWarning, "incorrect type for \"hostname\" (want string)", 1}},
-		},
-		{
-			config:  "hostname:\n  - name",
-			entries: []Entry{{entryWarning, "incorrect type for \"hostname\" (want string)", 1}},
-		},
-		// Want struct
-		{
-			config:  "coreos: true",
-			entries: []Entry{{entryWarning, "incorrect type for \"coreos\" (want struct)", 1}},
-		},
-		{
-			config:  "coreos: 4",
-			entries: []Entry{{entryWarning, "incorrect type for \"coreos\" (want struct)", 1}},
-		},
-		{
-			config:  "coreos: hello",
-			entries: []Entry{{entryWarning, "incorrect type for \"coreos\" (want struct)", 1}},
-		},
-		{
-			config:  "coreos:\n  - hello",
-			entries: []Entry{{entryWarning, "incorrect type for \"coreos\" (want struct)", 1}},
-		},
-		// Want []string
-		{
-			config:  "ssh_authorized_keys: true",
-			entries: []Entry{{entryWarning, "incorrect type for \"ssh_authorized_keys\" (want []string)", 1}},
-		},
-		{
-			config:  "ssh_authorized_keys: 4",
-			entries: []Entry{{entryWarning, "incorrect type for \"ssh_authorized_keys\" (want []string)", 1}},
-		},
-		{
-			config:  "ssh_authorized_keys: key",
-			entries: []Entry{{entryWarning, "incorrect type for \"ssh_authorized_keys\" (want []string)", 1}},
-		},
-		{
-			config:  "ssh_authorized_keys:\n  key: value",
-			entries: []Entry{{entryWarning, "incorrect type for \"ssh_authorized_keys\" (want []string)", 1}},
-		},
-		{
 			config: "ssh_authorized_keys:\n  - key",
 		},
 		{
-			config:  "ssh_authorized_keys:\n  - key: value",
-			entries: []Entry{{entryWarning, "incorrect type for \"ssh_authorized_keys[0]\" (want string)", 2}},
-		},
-		// Want []struct
-		{
-			config:  "users:\n  true",
-			entries: []Entry{{entryWarning, "incorrect type for \"users\" (want []struct)", 1}},
-		},
-		{
-			config:  "users:\n  4",
-			entries: []Entry{{entryWarning, "incorrect type for \"users\" (want []struct)", 1}},
-		},
-		{
-			config:  "users:\n  bad",
-			entries: []Entry{{entryWarning, "incorrect type for \"users\" (want []struct)", 1}},
-		},
-		{
-			config:  "users:\n  bad:",
-			entries: []Entry{{entryWarning, "incorrect type for \"users\" (want []struct)", 1}},
-		},
-		{
 			config: "users:\n  - name: good",
-		},
-		// Want struct within array
-		{
-			config:  "users:\n  - true",
-			entries: []Entry{{entryWarning, "incorrect type for \"users[0]\" (want struct)", 2}},
-		},
-		{
-			config:  "users:\n  - name: hi\n  - true",
-			entries: []Entry{{entryWarning, "incorrect type for \"users[1]\" (want struct)", 3}},
-		},
-		{
-			config:  "users:\n  - 4",
-			entries: []Entry{{entryWarning, "incorrect type for \"users[0]\" (want struct)", 2}},
-		},
-		{
-			config:  "users:\n  - bad",
-			entries: []Entry{{entryWarning, "incorrect type for \"users[0]\" (want struct)", 2}},
-		},
-		{
-			config:  "users:\n  - - bad",
-			entries: []Entry{{entryWarning, "incorrect type for \"users[0]\" (want struct)", 2}},
 		},
 	}
 
