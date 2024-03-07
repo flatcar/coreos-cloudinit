@@ -21,6 +21,7 @@ ConditionKernelCommandLine=!coreos.oem.id=digitalocean
 
 [Service]
 Type=oneshot
+ExecCondition=/usr/bin/bash -c "if [ -f '/etc/.ignition-result.json' ] && /usr/bin/jq -e '.userConfigProvided == true' /etc/.ignition-result.json; then exit 1; fi"
 TimeoutSec=10min
 RemainAfterExit=yes
 EnvironmentFile=-/etc/environment
