@@ -18,9 +18,11 @@ After=enable-oem-cloudinit.service oem-cloudinit.service
 # Skip on clouds that are covered by flatcar/init:systemd/system/oem-cloudinit.service
 ConditionKernelCommandLine=!flatcar.oem.id=digitalocean
 ConditionKernelCommandLine=!coreos.oem.id=digitalocean
-
+ConditionKernelCommandLine=!coreos.oem.id=openstack
+ConditionKernelCommandLine=!flatcar.oem.id=openstack
 [Service]
 Type=oneshot
+ExecCondition=/usr/bin/bash -c "if [ -f '/etc/.ignition-result.json' ] && /usr/bin/jq -e '.userConfigProvided == true' /etc/.ignition-result.json; then exit 1; fi"
 TimeoutSec=10min
 RemainAfterExit=yes
 EnvironmentFile=-/etc/environment
