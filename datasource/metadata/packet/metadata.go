@@ -24,8 +24,8 @@ import (
 )
 
 const (
-	DefaultAddress = "https://metadata.packet.net/"
-	apiVersion     = ""
+	DefaultAddress = "https://metadata.platformequinix.com/"
+	apiVersion     = "metadata"
 	userdataUrl    = "userdata"
 	metadataPath   = "metadata"
 )
@@ -50,7 +50,7 @@ type NetworkData struct {
 	DNS        []net.IP   `json:"dns"`
 }
 
-// Metadata that will be pulled from the https://metadata.packet.net/metadata only. We have the opportunity to add more later.
+// Metadata that will be pulled from the https://metadata.platformequinix.com/metadata only. We have the opportunity to add more later.
 type Metadata struct {
 	Hostname    string      `json:"hostname"`
 	SSHKeys     []string    `json:"ssh_keys"`
