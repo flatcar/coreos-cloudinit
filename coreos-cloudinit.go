@@ -31,6 +31,7 @@ import (
 	"github.com/flatcar/coreos-cloudinit/datasource"
 	"github.com/flatcar/coreos-cloudinit/datasource/configdrive"
 	"github.com/flatcar/coreos-cloudinit/datasource/file"
+	"github.com/flatcar/coreos-cloudinit/datasource/ionoscloud"
 	"github.com/flatcar/coreos-cloudinit/datasource/metadata/cloudsigma"
 	"github.com/flatcar/coreos-cloudinit/datasource/metadata/digitalocean"
 	"github.com/flatcar/coreos-cloudinit/datasource/metadata/ec2"
@@ -66,6 +67,7 @@ var (
 			cloudSigmaMetadataService   bool
 			digitalOceanMetadataService string
 			packetMetadataService       string
+			ionosCloudSeed              string
 			url                         string
 			procCmdLine                 bool
 			vmware                      bool
@@ -96,6 +98,7 @@ func init() {
 	flag.BoolVar(&flags.sources.procCmdLine, "from-proc-cmdline", false, fmt.Sprintf("Parse %s for '%s=<url>', using the cloud-config served by an HTTP GET to <url>", proc_cmdline.ProcCmdlineLocation, proc_cmdline.ProcCmdlineCloudConfigFlag))
 	flag.BoolVar(&flags.sources.vmware, "from-vmware-guestinfo", false, "Read data from VMware guestinfo")
 	flag.StringVar(&flags.sources.ovfEnv, "from-vmware-ovf-env", "", "Read data from OVF Environment")
+	flag.StringVar(&flags.sources.ionosCloudSeed, "from-ionoscloud-seed", "", "Read data from IONOS Cloud injected cloud-init seed files")
 	flag.StringVar(&flags.oem, "oem", "", "Use the settings specific to the provided OEM")
 	flag.StringVar(&flags.convertNetconf, "convert-netconf", "", "Read the network config provided in cloud-drive and translate it from the specified format into networkd unit files")
 	flag.StringVar(&flags.workspace, "workspace", "/var/lib/coreos-cloudinit", "Base directory coreos-cloudinit should use to store data")
@@ -133,6 +136,10 @@ var (
 		"vmware": {
 			"from-vmware-guestinfo": "true",
 			"convert-netconf":       "vmware",
+		},
+		"ionoscloud": {
+			"from-ionoscloud-seed": "/var/lib/cloud/seed/nocloud/",
+			"convert-netconf":      "debian",
 		},
 	}
 )
@@ -178,7 +185,7 @@ func main() {
 
 	dss := getDatasources()
 	if len(dss) == 0 {
-		fmt.Println("Provide at least one of --from-file, --from-configdrive, --from-ec2-metadata, --from-gce-metadata, --from-cloudsigma-metadata, --from-packet-metadata, --from-digitalocean-metadata, --from-vmware-guestinfo, --from-waagent, --from-url or --from-proc-cmdline")
+		fmt.Println("Provide at least one of --from-file, --from-configdrive, --from-ec2-metadata, --from-gce-metadata, --from-cloudsigma-metadata, --from-packet-metadata, --from-digitalocean-metadata, --from-ionoscloud-seed, --from-vmware-guestinfo, --from-waagent, --from-url or --from-proc-cmdline")
 		os.Exit(2)
 	}
 
@@ -368,6 +375,9 @@ func getDatasources() []datasource.Datasource {
 	}
 	if flags.sources.ovfEnv != "" {
 		dss = append(dss, vmware.NewDatasource(flags.sources.ovfEnv))
+	}
+	if flags.sources.ionosCloudSeed != "" {
+		dss = append(dss, ionoscloud.NewDatasource(flags.sources.ionosCloudSeed))
 	}
 	return dss
 }
