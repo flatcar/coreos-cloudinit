@@ -10,21 +10,17 @@ import (
 	"github.com/flatcar/coreos-cloudinit/datasource"
 )
 
-const (
-	networkconfig = "/etc/cloud/cloud.cfg.d/99_custom_networking.cfg"
-)
-
 type ionoscloud struct {
-	seed     string
-	readFile func(filename string) ([]byte, error)
+	configPath string
+	readFile   func(filename string) ([]byte, error)
 }
 
-func NewDatasource(seed string) *ionoscloud {
-	return &ionoscloud{seed, os.ReadFile}
+func NewDatasource(configPath string) *ionoscloud {
+	return &ionoscloud{configPath, os.ReadFile}
 }
 
 func (ic *ionoscloud) IsAvailable() bool {
-	_, err := os.Stat(ic.seed)
+	_, err := os.Stat(ic.configPath)
 	return !os.IsNotExist(err)
 }
 
@@ -33,7 +29,7 @@ func (ic *ionoscloud) AvailabilityChanges() bool {
 }
 
 func (ic *ionoscloud) ConfigRoot() string {
-	return ic.seed
+	return ic.configPath
 }
 
 func (ic *ionoscloud) FetchMetadata() (metadata datasource.Metadata, err error) {
@@ -43,7 +39,7 @@ func (ic *ionoscloud) FetchMetadata() (metadata datasource.Metadata, err error) 
 		SSHPublicKeys map[string]string `json:"public_keys"`
 	}
 
-	if data, err = ic.tryReadFile(path.Join(ic.seed, "meta-data")); err != nil || len(data) == 0 {
+	if data, err = ic.tryReadFile(path.Join(ic.configPath, "meta-data")); err != nil || len(data) == 0 {
 		return
 	}
 	if err = yaml.Unmarshal([]byte(data), &m); err != nil {
@@ -51,13 +47,13 @@ func (ic *ionoscloud) FetchMetadata() (metadata datasource.Metadata, err error) 
 	}
 
 	metadata.SSHPublicKeys = m.SSHPublicKeys
-	metadata.NetworkConfig, _ = ic.tryReadFile(networkconfig)
+	metadata.NetworkConfig, _ = ic.tryReadFile(path.Join(ic.configPath, "99_custom_networking.cfg"))
 
 	return
 }
 
 func (ic *ionoscloud) FetchUserdata() ([]byte, error) {
-	return ic.tryReadFile(path.Join(ic.seed, "user-data"))
+	return ic.tryReadFile(path.Join(ic.configPath, "user-data"))
 }
 
 func (ic *ionoscloud) Type() string {
