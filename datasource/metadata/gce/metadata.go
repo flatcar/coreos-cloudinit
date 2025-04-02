@@ -16,8 +16,10 @@ package gce
 
 import (
 	"fmt"
+	"log"
 	"net"
 	"net/http"
+	"strings"
 
 	"github.com/flatcar/coreos-cloudinit/datasource"
 	"github.com/flatcar/coreos-cloudinit/datasource/metadata"
@@ -49,6 +51,15 @@ func (ms metadataService) FetchMetadata() (datasource.Metadata, error) {
 	hostname, err := ms.fetchString("hostname")
 	if err != nil {
 		return datasource.Metadata{}, err
+	}
+
+	if len(hostname) > 63 {
+		log.Printf("Hostname too long. Truncating hostname %s to %s", hostname, strings.Split(hostname, ".")[0])
+		hostname = strings.Split(hostname, ".")[0]
+		if len(hostname) > 63 {
+			log.Printf("Hostname still too long. Truncating hostname %s further to 63 bytes (%s)", hostname, hostname[:63])
+			hostname = hostname[:63]
+		}
 	}
 
 	return datasource.Metadata{

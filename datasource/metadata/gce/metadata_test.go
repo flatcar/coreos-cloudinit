@@ -72,6 +72,36 @@ func TestFetchMetadata(t *testing.T) {
 			},
 		},
 		{
+			// test long host names are truncated on first `.`
+			root:         "/",
+			metadataPath: "computeMetadata/v1/instance/",
+			resources: map[string]string{
+				"/computeMetadata/v1/instance/hostname":                                          "this-hostname-is-larger-than-sixty-three-characters-long-and.will.be.truncated.local",
+				"/computeMetadata/v1/instance/network-interfaces/0/ip":                           "1.2.3.4",
+				"/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip": "5.6.7.8",
+			},
+			expect: datasource.Metadata{
+				Hostname:    "this-hostname-is-larger-than-sixty-three-characters-long-and",
+				PrivateIPv4: net.ParseIP("1.2.3.4"),
+				PublicIPv4:  net.ParseIP("5.6.7.8"),
+			},
+		},
+		{
+			// test long host names are truncated if segment before first `.` is too long
+			root:         "/",
+			metadataPath: "computeMetadata/v1/instance/",
+			resources: map[string]string{
+				"/computeMetadata/v1/instance/hostname":                                          "this-hostname-is-larger-than-sixty-three-characters-long-and-will-be-truncated.local",
+				"/computeMetadata/v1/instance/network-interfaces/0/ip":                           "1.2.3.4",
+				"/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip": "5.6.7.8",
+			},
+			expect: datasource.Metadata{
+				Hostname:    "this-hostname-is-larger-than-sixty-three-characters-long-and-wi",
+				PrivateIPv4: net.ParseIP("1.2.3.4"),
+				PublicIPv4:  net.ParseIP("5.6.7.8"),
+			},
+		},
+		{
 			clientErr: pkg.ErrTimeout{Err: fmt.Errorf("test error")},
 			expectErr: pkg.ErrTimeout{Err: fmt.Errorf("test error")},
 		},
