@@ -286,13 +286,14 @@ func determineHostname(md datasource.Metadata, udata *initialize.UserData) strin
 			hostname = udataHostname
 		}
 	}
+	// Always truncate hostnames to everything before the first `.`
+	hostname = strings.Split(hostname, ".")[0]
+
+	// Truncate after 63 characters if the hostname exceeds that
 	if len(hostname) > 63 {
-		log.Printf("Hostname too long. Truncating hostname %s to %s", hostname, strings.Split(hostname, ".")[0])
-		hostname = strings.Split(hostname, ".")[0]
-		if len(hostname) > 63 {
-			log.Printf("Hostname still too long. Truncating hostname %s further to 63 bytes (%s)", hostname, hostname[:63])
-			hostname = hostname[:63]
-		}
+		log.Printf("Hostname too long. Truncating hostname %s to 63 bytes (%s)", hostname, hostname[:63])
+		hostname = hostname[:63]
+
 	}
 	return hostname
 }
