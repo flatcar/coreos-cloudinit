@@ -23,6 +23,7 @@ import (
 	"log"
 	"os"
 	"runtime"
+	"strings"
 	"sync"
 	"time"
 
@@ -283,6 +284,14 @@ func determineHostname(md datasource.Metadata, udata *initialize.UserData) strin
 		udataHostname := udata.FindHostname()
 		if udataHostname != "" {
 			hostname = udataHostname
+		}
+	}
+	if len(hostname) > 63 {
+		log.Printf("Hostname too long. Truncating hostname %s to %s", hostname, strings.Split(hostname, ".")[0])
+		hostname = strings.Split(hostname, ".")[0]
+		if len(hostname) > 63 {
+			log.Printf("Hostname still too long. Truncating hostname %s further to 63 bytes (%s)", hostname, hostname[:63])
+			hostname = hostname[:63]
 		}
 	}
 	return hostname
