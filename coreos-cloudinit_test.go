@@ -18,6 +18,10 @@ import (
 	"bytes"
 	"encoding/base64"
 	"errors"
+	"github.com/flatcar/coreos-cloudinit/datasource"
+	"github.com/flatcar/coreos-cloudinit/initialize"
+	"net"
+	"reflect"
 	"testing"
 )
 
@@ -74,4 +78,76 @@ func TestDecompressIfGzip(t *testing.T) {
 		}
 	}
 
+}
+
+func TestDetermineHostname(t *testing.T) {
+	for _, tt := range []struct {
+		metaData datasource.Metadata
+		uData    *initialize.UserData
+		expect   string
+	}{
+		{
+			metaData: datasource.Metadata{
+				PublicIPv4:    net.ParseIP("1.2.3.4"),
+				PublicIPv6:    net.ParseIP("5.6.7.8"),
+				PrivateIPv4:   net.ParseIP("1.2.3.4"),
+				PrivateIPv6:   net.ParseIP("5.6.7.8"),
+				Hostname:      "regular-name",
+				SSHPublicKeys: map[string]string{"my": "key"},
+				NetworkConfig: net.Interface{
+					Index:        0,
+					MTU:          0,
+					Name:         "some-interface",
+					HardwareAddr: nil,
+					Flags:        0,
+				},
+			},
+			uData:  nil,
+			expect: "regular-name",
+		},
+		{
+			metaData: datasource.Metadata{
+				PublicIPv4:    net.ParseIP("1.2.3.4"),
+				PublicIPv6:    net.ParseIP("5.6.7.8"),
+				PrivateIPv4:   net.ParseIP("1.2.3.4"),
+				PrivateIPv6:   net.ParseIP("5.6.7.8"),
+				Hostname:      "this-hostname-is-larger-than-sixty-three-characters-long-and.will.be.truncated.locale",
+				SSHPublicKeys: map[string]string{"my": "key"},
+				NetworkConfig: net.Interface{
+					Index:        0,
+					MTU:          0,
+					Name:         "some-interface",
+					HardwareAddr: nil,
+					Flags:        0,
+				},
+			},
+			uData:  nil,
+			expect: "this-hostname-is-larger-than-sixty-three-characters-long-and",
+		},
+		{
+			metaData: datasource.Metadata{
+				PublicIPv4:    net.ParseIP("1.2.3.4"),
+				PublicIPv6:    net.ParseIP("5.6.7.8"),
+				PrivateIPv4:   net.ParseIP("1.2.3.4"),
+				PrivateIPv6:   net.ParseIP("5.6.7.8"),
+				Hostname:      "this-hostname-is-larger-than-sixty-three-characters-long-and-will-be-truncated.local",
+				SSHPublicKeys: map[string]string{"my": "key"},
+				NetworkConfig: net.Interface{
+					Index:        0,
+					MTU:          0,
+					Name:         "some-interface",
+					HardwareAddr: nil,
+					Flags:        0,
+				},
+			},
+			uData:  nil,
+			expect: "this-hostname-is-larger-than-sixty-three-characters-long-and-wi",
+		},
+	} {
+		hostname := determineHostname(tt.metaData, tt.uData)
+		if !reflect.DeepEqual(tt.expect, hostname) {
+			t.Fatalf("Bad hostname, want %s, got %s", tt.expect, hostname)
+		}
+
+	}
 }
