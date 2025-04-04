@@ -111,6 +111,25 @@ func TestDetermineHostname(t *testing.T) {
 				PublicIPv6:    net.ParseIP("5.6.7.8"),
 				PrivateIPv4:   net.ParseIP("1.2.3.4"),
 				PrivateIPv6:   net.ParseIP("5.6.7.8"),
+				Hostname:      "regular-name.domain",
+				SSHPublicKeys: map[string]string{"my": "key"},
+				NetworkConfig: net.Interface{
+					Index:        0,
+					MTU:          0,
+					Name:         "some-interface",
+					HardwareAddr: nil,
+					Flags:        0,
+				},
+			},
+			uData:  nil,
+			expect: "regular-name",
+		},
+		{
+			metaData: datasource.Metadata{
+				PublicIPv4:    net.ParseIP("1.2.3.4"),
+				PublicIPv6:    net.ParseIP("5.6.7.8"),
+				PrivateIPv4:   net.ParseIP("1.2.3.4"),
+				PrivateIPv6:   net.ParseIP("5.6.7.8"),
 				Hostname:      "this-hostname-is-larger-than-sixty-three-characters-long-and.will.be.truncated.locale",
 				SSHPublicKeys: map[string]string{"my": "key"},
 				NetworkConfig: net.Interface{
