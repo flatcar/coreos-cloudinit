@@ -6,5 +6,5 @@ Requires=flatcar-setup-environment.service
 After=flatcar-setup-environment.service
 
 # Load OEM cloud-config.yml
-Requires=system-cloudinit@usr-share-oem-cloud\x2dconfig.yml.service
-After=system-cloudinit@usr-share-oem-cloud\x2dconfig.yml.service
+Requires=system-cloudinit@usr-share-coreos-cloud\x2dconfig.yml.service
+After=system-cloudinit@usr-share-coreos-cloud\x2dconfig.yml.service
