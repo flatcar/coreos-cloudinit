@@ -21,8 +21,8 @@ On every boot, coreos-cloudinit looks for a config file to configure your host. 
 | `/var/lib/coreos-vagrant/vagrantfile-user-data`| Vagrant OEM scripts automatically store Cloud-Config into this path. |
 | `/var/lib/waagent/CustomData`| Azure platform uses OEM path for first Cloud-Config initialization and then `/var/lib/waagent/CustomData` to apply your settings. |
 | `http://169.254.169.254/metadata/v1/user-data` `http://169.254.169.254/2009-04-04/user-data` `https://metadata.packet.net/userdata`|DigitalOcean, EC2 and Packet cloud providers correspondingly use these URLs to download Cloud-Config.|
-| `/usr/share/oem/bin/vmtoolsd --cmd "info-get guestinfo.coreos.config.data"` | Cloud-Config provided by [VMware Guestinfo][VMware Guestinfo] |
-| `/usr/share/oem/bin/vmtoolsd --cmd "info-get guestinfo.coreos.config.url"` | Cloud-Config URL provided by [VMware Guestinfo][VMware Guestinfo] |
+| `vmtoolsd --cmd "info-get guestinfo.coreos.config.data"` | Cloud-Config provided by [VMware Guestinfo][VMware Guestinfo] |
+| `vmtoolsd --cmd "info-get guestinfo.coreos.config.url"` | Cloud-Config URL provided by [VMware Guestinfo][VMware Guestinfo] |
 
 [VMware Guestinfo]: vmware-guestinfo.md
 
