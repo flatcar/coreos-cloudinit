@@ -86,7 +86,7 @@ Environment="ETCD_PEER_ADDR=192.0.2.13:7001"
 
 For more information about the available configuration parameters, see the [etcd documentation][etcd-config].
 
-_Note: The `$private_ipv4` and `$public_ipv4` substitution variables referenced in other documents are only supported on Amazon EC2, Google Compute Engine, OpenStack, Rackspace, DigitalOcean, and Vagrant._
+_Note: The `$private_ipv4` and `$public_ipv4` substitution variables referenced in other documents are only supported on Amazon EC2, Google Compute Engine, OpenStack, DigitalOcean, and Vagrant._
 
 [etcd-config]: https://etcd.io/docs/v3.5/op-guide/configuration/
 
@@ -126,7 +126,7 @@ Environment="ETCD_LISTEN_PEER_URLS=http://192.0.2.13:2380,http://192.0.2.13:7001
 
 For more information about the available configuration parameters, see the [etcd2 documentation][etcd2-config].
 
-_Note: The `$private_ipv4` and `$public_ipv4` substitution variables referenced in other documents are only supported on Amazon EC2, Google Compute Engine, OpenStack, Rackspace, DigitalOcean, and Vagrant._
+_Note: The `$private_ipv4` and `$public_ipv4` substitution variables referenced in other documents are only supported on Amazon EC2, Google Compute Engine, OpenStack, DigitalOcean, and Vagrant._
 
 [etcd2-config]: https://etcd.io/docs/v2.3/configuration/
 

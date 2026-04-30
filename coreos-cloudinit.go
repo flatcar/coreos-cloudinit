@@ -115,10 +115,6 @@ var (
 		"gce": {
 			"from-gce-metadata": "http://metadata.google.internal/",
 		},
-		"rackspace-onmetal": {
-			"from-configdrive": "/media/configdrive",
-			"convert-netconf":  "debian",
-		},
 		"azure": {
 			"from-waagent": "/var/lib/waagent",
 		},

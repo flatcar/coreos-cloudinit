@@ -287,10 +287,10 @@ coreos:
  
 '
   oem:
-    id: rackspace
-    name: Rackspace Cloud Servers
+    id: cloudstack
+    name: CloudStack
     version_id: 168.0.0
-    home_url: https://www.rackspace.com/cloud/servers/
+    home_url: https://cloudstack.apache.org/
     bug_report_url: https://github.com/flatcar/coreos-overlay
 ssh_authorized_keys:
   - foobar
@@ -360,8 +360,8 @@ Address=10.209.171.177/19
 		}
 	}
 
-	if cfg.CoreOS.OEM.ID != "rackspace" {
-		t.Errorf("Failed parsing coreos.oem. Expected ID 'rackspace', got %q.", cfg.CoreOS.OEM.ID)
+	if cfg.CoreOS.OEM.ID != "cloudstack" {
+		t.Errorf("Failed parsing coreos.oem. Expected ID 'cloudstack', got %q.", cfg.CoreOS.OEM.ID)
 	}
 
 	if cfg.Hostname != "trontastic" {
