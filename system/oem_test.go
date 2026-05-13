@@ -32,19 +32,19 @@ func TestOEMFile(t *testing.T) {
 		},
 		{
 			config.OEM{
-				ID:           "rackspace",
-				Name:         "Rackspace Cloud Servers",
+				ID:           "cloudstack",
+				Name:         "CloudStack",
 				VersionID:    "168.0.0",
-				HomeURL:      "https://www.rackspace.com/cloud/servers/",
+				HomeURL:      "https://cloudstack.apache.org/",
 				BugReportURL: "https://github.com/flatcar/coreos-overlay",
 			},
 			&File{config.File{
 				Path:               "etc/oem-release",
 				RawFilePermissions: "0644",
-				Content: `ID=rackspace
+				Content: `ID=cloudstack
 VERSION_ID=168.0.0
-NAME="Rackspace Cloud Servers"
-HOME_URL="https://www.rackspace.com/cloud/servers/"
+NAME="CloudStack"
+HOME_URL="https://cloudstack.apache.org/"
 BUG_REPORT_URL="https://github.com/flatcar/coreos-overlay"
 `,
 			}},

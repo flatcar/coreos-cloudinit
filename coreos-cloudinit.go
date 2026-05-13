@@ -36,7 +36,6 @@ import (
 	"github.com/flatcar/coreos-cloudinit/datasource/metadata/digitalocean"
 	"github.com/flatcar/coreos-cloudinit/datasource/metadata/ec2"
 	"github.com/flatcar/coreos-cloudinit/datasource/metadata/gce"
-	"github.com/flatcar/coreos-cloudinit/datasource/metadata/packet"
 	"github.com/flatcar/coreos-cloudinit/datasource/proc_cmdline"
 	"github.com/flatcar/coreos-cloudinit/datasource/url"
 	"github.com/flatcar/coreos-cloudinit/datasource/vmware"
@@ -66,7 +65,6 @@ var (
 			gceMetadataService          string
 			cloudSigmaMetadataService   bool
 			digitalOceanMetadataService string
-			packetMetadataService       string
 			url                         string
 			procCmdLine                 bool
 			vmware                      bool
@@ -92,7 +90,6 @@ func init() {
 	flag.StringVar(&flags.sources.gceMetadataService, "from-gce-metadata", "", "Download GCE data from the provided url")
 	flag.BoolVar(&flags.sources.cloudSigmaMetadataService, "from-cloudsigma-metadata", false, "Download data from CloudSigma server context")
 	flag.StringVar(&flags.sources.digitalOceanMetadataService, "from-digitalocean-metadata", "", "Download DigitalOcean data from the provided url")
-	flag.StringVar(&flags.sources.packetMetadataService, "from-packet-metadata", "", "Download Packet data from metadata service")
 	flag.StringVar(&flags.sources.url, "from-url", "", "Download user-data from provided url")
 	flag.BoolVar(&flags.sources.procCmdLine, "from-proc-cmdline", false, fmt.Sprintf("Parse %s for '%s=<url>', using the cloud-config served by an HTTP GET to <url>", proc_cmdline.ProcCmdlineLocation, proc_cmdline.ProcCmdlineCloudConfigFlag))
 	flag.BoolVar(&flags.sources.vmware, "from-vmware-guestinfo", false, "Read data from VMware guestinfo")
@@ -118,18 +115,11 @@ var (
 		"gce": {
 			"from-gce-metadata": "http://metadata.google.internal/",
 		},
-		"rackspace-onmetal": {
-			"from-configdrive": "/media/configdrive",
-			"convert-netconf":  "debian",
-		},
 		"azure": {
 			"from-waagent": "/var/lib/waagent",
 		},
 		"cloudsigma": {
 			"from-cloudsigma-metadata": "true",
-		},
-		"packet": {
-			"from-packet-metadata": "https://metadata.packet.net/",
 		},
 		"vmware": {
 			"from-vmware-guestinfo": "true",
@@ -170,16 +160,15 @@ func main() {
 	switch flags.convertNetconf {
 	case "":
 	case "debian":
-	case "packet":
 	case "vmware":
 	default:
-		fmt.Printf("Invalid option to -convert-netconf: '%s'. Supported options: 'debian, packet, vmware'\n", flags.convertNetconf)
+		fmt.Printf("Invalid option to -convert-netconf: '%s'. Supported options: 'debian, vmware'\n", flags.convertNetconf)
 		os.Exit(2)
 	}
 
 	dss := getDatasources()
 	if len(dss) == 0 {
-		fmt.Println("Provide at least one of --from-file, --from-configdrive, --from-ec2-metadata, --from-gce-metadata, --from-cloudsigma-metadata, --from-packet-metadata, --from-digitalocean-metadata, --from-vmware-guestinfo, --from-waagent, --from-url or --from-proc-cmdline")
+		fmt.Println("Provide at least one of --from-file, --from-configdrive, --from-ec2-metadata, --from-gce-metadata, --from-cloudsigma-metadata, --from-digitalocean-metadata, --from-vmware-guestinfo, --from-waagent, --from-url or --from-proc-cmdline")
 		os.Exit(2)
 	}
 
@@ -319,8 +308,6 @@ func setupNetworkUnits(netConfig interface{}, env *initialize.Environment, netco
 	switch netconf {
 	case "debian":
 		ifaces, err = network.ProcessDebianNetconf(netConfig.([]byte))
-	case "packet":
-		ifaces, err = network.ProcessPacketNetconf(netConfig.(packet.NetworkData))
 	case "vmware":
 		ifaces, err = network.ProcessVMwareNetconf(netConfig.(map[string]string))
 	default:
@@ -366,9 +353,6 @@ func getDatasources() []datasource.Datasource {
 	}
 	if flags.sources.waagent != "" {
 		dss = append(dss, waagent.NewDatasource(flags.sources.waagent))
-	}
-	if flags.sources.packetMetadataService != "" {
-		dss = append(dss, packet.NewDatasource(flags.sources.packetMetadataService))
 	}
 	if flags.sources.procCmdLine {
 		dss = append(dss, proc_cmdline.NewDatasource())

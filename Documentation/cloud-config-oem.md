@@ -26,20 +26,20 @@ For example, the following cloud-config document...
 #cloud-config
 coreos:
   oem:
-    id: "rackspace"
-    name: "Rackspace Cloud Servers"
+    id: "cloudstack"
+    name: "CloudStack"
     version-id: "168.0.0"
-    home-url: "https://www.rackspace.com/cloud/servers/"
+    home-url: "https://cloudstack.apache.org/"
     bug-report-url: "https://github.com/flatcar/flatcar/issues"
 ```
 
 ...would be rendered to the following `/etc/oem-release`:
 
 ```yaml
-ID=rackspace
-NAME="Rackspace Cloud Servers"
+ID=cloudstack
+NAME="CloudStack"
 VERSION_ID=168.0.0
-HOME_URL="https://www.rackspace.com/cloud/servers/"
+HOME_URL="https://cloudstack.apache.org/"
 BUG_REPORT_URL="https://github.com/flatcar/flatcar/issues"
 ```
 
