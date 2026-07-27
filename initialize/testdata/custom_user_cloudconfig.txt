@@ -1,0 +1,15 @@
+#cloud-config
+
+hostname: customhost
+
+ssh_authorized_keys:
+  - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGdByTgSVHq global-key
+
+users:
+  - name: admin
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCaLEE+pLP admin-key-1
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCf0HE7V4C admin-key-2
+  - name: core
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDd6H4rOzC core-key

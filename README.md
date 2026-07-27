@@ -49,6 +49,9 @@ write_files:
         nameserver 192.0.2.3
 ```
 
+By default, SSH keys from `ssh_authorized_keys` and user-data are applied to the `core` user.
+This can be customized using the `--default-user` flag when running `coreos-cloudinit`.
+
 ## Executing a Script
 
 coreos-cloudinit supports executing user-data as a script instead of parsing it as a cloud-config document.

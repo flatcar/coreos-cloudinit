@@ -2,3 +2,4 @@
 bin/
 coverage/
 gopath/
+/coreos-cloudinit
