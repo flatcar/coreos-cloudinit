@@ -346,10 +346,11 @@ coreos:
 
 ### ssh_authorized_keys
 
-The `ssh_authorized_keys` parameter adds public SSH keys which will be authorized for the `core` user.
+The `ssh_authorized_keys` parameter adds public SSH keys which will be authorized for the default user (defaults to `core`).
 
 The keys will be named "coreos-cloudinit" by default.
 Override this by using the `--ssh-key-name` flag when calling `coreos-cloudinit`.
+Change the default user by using the `--default-user` flag.
 
 ```yaml
 #cloud-config

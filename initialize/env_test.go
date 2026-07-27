@@ -95,7 +95,7 @@ addr: $private_ipv4
 		},
 	} {
 
-		env := NewEnvironment("./", "./", "./", "", tt.metadata)
+		env := NewEnvironment("./", "./", "./", "", DefaultUser, tt.metadata)
 		got := env.Apply(tt.input)
 		if got != tt.out {
 			t.Fatalf("Environment incorrectly applied.\ngot:\n%s\nwant:\n%s", got, tt.out)
@@ -118,7 +118,7 @@ func TestEnvironmentFile(t *testing.T) {
 	}
 	defer os.RemoveAll(dir)
 
-	env := NewEnvironment("./", "./", "./", "", metadata)
+	env := NewEnvironment("./", "./", "./", "", DefaultUser, metadata)
 	ef := env.DefaultEnvironmentFile()
 	err = system.WriteEnvFile(ef, dir)
 	if err != nil {
@@ -140,9 +140,25 @@ func TestEnvironmentFileNil(t *testing.T) {
 	os.Clearenv()
 	metadata := datasource.Metadata{}
 
-	env := NewEnvironment("./", "./", "./", "", metadata)
+	env := NewEnvironment("./", "./", "./", "", DefaultUser, metadata)
 	ef := env.DefaultEnvironmentFile()
 	if ef != nil {
 		t.Fatalf("Environment file not nil: %v", ef)
+	}
+}
+
+func TestEnvironmentDefaultUser(t *testing.T) {
+	metadata := datasource.Metadata{}
+
+	// Test default value
+	env := NewEnvironment("./", "./", "./", "", DefaultUser, metadata)
+	if env.DefaultUser() != "core" {
+		t.Fatalf("Expected default user 'core', got '%s'", env.DefaultUser())
+	}
+
+	// Test custom value
+	env = NewEnvironment("./", "./", "./", "", "admin", metadata)
+	if env.DefaultUser() != "admin" {
+		t.Fatalf("Expected default user 'admin', got '%s'", env.DefaultUser())
 	}
 }

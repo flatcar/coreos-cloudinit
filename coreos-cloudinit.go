@@ -73,6 +73,7 @@ var (
 		convertNetconf string
 		workspace      string
 		sshKeyName     string
+		defaultUser    string
 		oem            string
 		validate       bool
 	}{}
@@ -98,6 +99,7 @@ func init() {
 	flag.StringVar(&flags.convertNetconf, "convert-netconf", "", "Read the network config provided in cloud-drive and translate it from the specified format into networkd unit files")
 	flag.StringVar(&flags.workspace, "workspace", "/var/lib/coreos-cloudinit", "Base directory coreos-cloudinit should use to store data")
 	flag.StringVar(&flags.sshKeyName, "ssh-key-name", initialize.DefaultSSHKeyName, "Add SSH keys to the system with the given name")
+	flag.StringVar(&flags.defaultUser, "default-user", initialize.DefaultUser, "Default user to receive SSH keys from cloud-config")
 	flag.BoolVar(&flags.validate, "validate", false, "[EXPERIMENTAL] Validate the user-data but do not apply it to the system")
 }
 
@@ -184,7 +186,7 @@ func main() {
 		log.Printf("Failed fetching meta-data from datasource: %v\n", err)
 		os.Exit(1)
 	}
-	env := initialize.NewEnvironment("/", ds.ConfigRoot(), flags.workspace, flags.sshKeyName, metadata)
+	env := initialize.NewEnvironment("/", ds.ConfigRoot(), flags.workspace, flags.sshKeyName, flags.defaultUser, metadata)
 
 	// Setup networking units
 	if flags.convertNetconf != "" {
@@ -236,7 +238,7 @@ func main() {
 	}
 
 	mergedKeys := mergeSSHKeysFromSources(metadata, udata)
-	if err := initialize.ApplyCoreUserSSHKeys(mergedKeys, env); err != nil {
+	if err := initialize.ApplyDefaultUserSSHKeys(mergedKeys, env); err != nil {
 		log.Printf("Failed to apply SSH keys: %v", err)
 		mustStop = true
 	}

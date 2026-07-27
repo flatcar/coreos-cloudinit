@@ -356,12 +356,12 @@ func (ud *UserData) FindSSHKeys(additionalKeys []string) []string {
 
 			if part.cloudConfig.Users != nil {
 				for _, user := range part.cloudConfig.Users {
-					if user.Name != "core" {
+					if user.Name != ud.env.DefaultUser() {
 						continue
 					}
 
-					// The "core" user is the default user on coreos systems. Append these keys to the list.
-					// TODO(gabriel-samfira): make the default user configurable?
+					// The default user on the system receives SSH keys from cloud-config.
+					// The default user is configurable via the --default-user flag.
 					for _, key := range user.SSHAuthorizedKeys {
 						keys[key] = struct{}{}
 					}

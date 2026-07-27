@@ -49,15 +49,15 @@ func ApplyHostname(hostname string) error {
 	return nil
 }
 
-func ApplyCoreUserSSHKeys(keys []string, env *Environment) error {
+func ApplyDefaultUserSSHKeys(keys []string, env *Environment) error {
 	if len(keys) == 0 {
 		return nil
 	}
-	err := system.AuthorizeSSHKeys("core", env.SSHKeyName(), keys)
+	err := system.AuthorizeSSHKeys(env.DefaultUser(), env.SSHKeyName(), keys)
 	if err != nil {
 		return err
 	}
-	log.Printf("Authorized SSH keys for core user")
+	log.Printf("Authorized SSH keys for %s user", env.DefaultUser())
 	return nil
 }
 
@@ -107,9 +107,9 @@ func Apply(cfg config.CloudConfig, env *Environment) error {
 			}
 		}
 
-		// If this is the "core" user, we skip adding the ssh keys from SSHAuthorizedKeys. Those keys will
+		// If this is the default user, we skip adding the ssh keys from SSHAuthorizedKeys. Those keys will
 		// be added later along any other keys we fetch from user-data and metadata.
-		if len(user.SSHAuthorizedKeys) > 0 && user.Name != "core" {
+		if len(user.SSHAuthorizedKeys) > 0 && user.Name != env.DefaultUser() {
 			log.Printf("Authorizing %d SSH keys for user '%s'", len(user.SSHAuthorizedKeys), user.Name)
 			if err := system.AuthorizeSSHKeys(user.Name, env.SSHKeyName(), user.SSHAuthorizedKeys); err != nil {
 				return err

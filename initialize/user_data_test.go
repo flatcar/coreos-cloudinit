@@ -68,7 +68,7 @@ func TestParseMultipartMime(t *testing.T) {
 
 func getTestEnv() *Environment {
 	metadata := datasource.Metadata{}
-	return NewEnvironment("./", "./", "./", "", metadata)
+	return NewEnvironment("./", "./", "./", "", DefaultUser, metadata)
 }
 
 func TestNewUserDataParsesIgnition(t *testing.T) {
@@ -111,4 +111,56 @@ func TestNewUserDataParsesUnknown(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, 1, len(udata.Parts))
 	require.Equal(t, udata.Parts[0].userDataType, UnknownType)
+}
+
+func TestFindSSHKeysWithDefaultUser(t *testing.T) {
+	data, err := os.ReadFile("testdata/custom_user_cloudconfig.txt")
+	require.NoError(t, err)
+
+	// Test with default user = "core"
+	env := getTestEnv()
+	udata, err := NewUserData(string(data), env)
+	require.NoError(t, err)
+
+	keys := udata.FindSSHKeys([]string{})
+	require.Equal(t, 2, len(keys))
+	// Should find global key and core user's key
+	require.Contains(t, keys, "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGdByTgSVHq global-key")
+	require.Contains(t, keys, "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDd6H4rOzC core-key")
+}
+
+func TestFindSSHKeysWithCustomDefaultUser(t *testing.T) {
+	data, err := os.ReadFile("testdata/custom_user_cloudconfig.txt")
+	require.NoError(t, err)
+
+	// Test with default user = "admin"
+	metadata := datasource.Metadata{}
+	env := NewEnvironment("./", "./", "./", "", "admin", metadata)
+	udata, err := NewUserData(string(data), env)
+	require.NoError(t, err)
+
+	keys := udata.FindSSHKeys([]string{})
+	require.Equal(t, 3, len(keys))
+	// Should find global key and admin user's two keys
+	require.Contains(t, keys, "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGdByTgSVHq global-key")
+	require.Contains(t, keys, "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCaLEE+pLP admin-key-1")
+	require.Contains(t, keys, "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCf0HE7V4C admin-key-2")
+	// Should NOT find core user's key
+	for _, key := range keys {
+		require.NotEqual(t, "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDd6H4rOzC core-key", key)
+	}
+}
+
+func TestFindSSHKeysWithAdditionalKeys(t *testing.T) {
+	data, err := os.ReadFile("testdata/custom_user_cloudconfig.txt")
+	require.NoError(t, err)
+
+	env := getTestEnv()
+	udata, err := NewUserData(string(data), env)
+	require.NoError(t, err)
+
+	additionalKeys := []string{"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC additional-key"}
+	keys := udata.FindSSHKeys(additionalKeys)
+	require.Equal(t, 3, len(keys))
+	require.Contains(t, keys, "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC additional-key")
 }
