@@ -26,7 +26,10 @@ func DecodeGzipContent(content string) ([]byte, error) {
 	defer gzr.Close()
 
 	buf := new(bytes.Buffer)
-	buf.ReadFrom(gzr)
+
+	if _, err := buf.ReadFrom(gzr); err != nil {
+		return nil, fmt.Errorf("Unable to decode gzip: %q", err)
+	}
 
 	return buf.Bytes(), nil
 }
